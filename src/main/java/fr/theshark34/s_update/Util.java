@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -128,11 +129,13 @@ public final class Util {
 	 */
 	public static File downloadFile(URL url, File output) throws IOException {
 		output.getParentFile().mkdirs();
-		ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+		downloadingFile = output;
+		URLConnection connection = url.openConnection();
+		downloadingFileSize = connection.getContentLengthLong();
+		ReadableByteChannel rbc = Channels.newChannel(connection
+				.getInputStream());
 		FileOutputStream fos = new FileOutputStream(output);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-		downloadingFile = output;
-		downloadingFileSize = fos.getChannel().size();
 		fos.close();
 		return output;
 	}

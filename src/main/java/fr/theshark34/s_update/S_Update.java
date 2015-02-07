@@ -72,7 +72,7 @@ public class S_Update {
 	/**
 	 * The current state, DOWNLOADING, UNZIPPING, or REMOVNG
 	 */
-	private int state;
+	private int state = -1;
 
 	/**
 	 * State DOWNLOADING
@@ -85,6 +85,11 @@ public class S_Update {
 	public static final int UNZIPPING = 1;
 
 	/**
+	 * State REMOVING
+	 */
+	public static final int REMOVING = 2;
+
+	/**
 	 * The current downloading/unzipping/removing file number
 	 */
 	private int fileNumber;
@@ -95,10 +100,10 @@ public class S_Update {
 	private int numberOfFiles;
 
 	/**
-	 * State REMOVING
+	 * The current downloading/unzipping/removing file name
 	 */
-	public static final int REMOVING = 2;
-	
+	private String currentFileName;
+
 	/**
 	 * Base constructor
 	 * 
@@ -209,6 +214,7 @@ public class S_Update {
 		this.fileNumber = 0;
 		for (int i = 0; i < filesToDownload.size(); i++) {
 			FileToUpdate f = filesToDownload.get(i);
+			this.currentFileName = f.toString();
 			this.fileNumber++;
 			System.out.println("[S-Update] Downloading " + this.baseURL
 					+ "/Files/" + f);
@@ -221,6 +227,7 @@ public class S_Update {
 		this.fileNumber = 0;
 		for (int i = 0; i < filesToUnzip.size(); i++) {
 			FileToUpdate f = filesToUnzip.get(i);
+			this.currentFileName = f.toString();
 			this.fileNumber++;
 			System.out.println("[S-Update] Downloading " + this.baseURL
 					+ "/Files/" + f);
@@ -238,6 +245,7 @@ public class S_Update {
 		this.fileNumber = 0;
 		for (int i = 0; i < filesToRemove.size(); i++) {
 			FileToUpdate f = filesToRemove.get(i);
+			this.currentFileName = f.toString();
 			this.fileNumber++;
 			System.out.println("[S-Update] Removing "
 					+ this.outputFolder.getAbsolutePath() + "/" + f);
@@ -317,5 +325,14 @@ public class S_Update {
 	 */
 	public int getNumberOfFiles() {
 		return this.numberOfFiles;
+	}
+
+	/**
+	 * The current downloading/unzipping/removing file name
+	 * 
+	 * @return The current downloading/unzipping/removing file name
+	 */
+	public String getCurrentFileName() {
+		return this.currentFileName;
 	}
 }
