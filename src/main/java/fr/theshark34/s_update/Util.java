@@ -43,6 +43,16 @@ import java.util.zip.ZipFile;
 public final class Util {
 
 	/**
+	 * The size of the current downloading file
+	 */
+	private static long downloadingFileSize;
+
+	/**
+	 * The current downloading file
+	 */
+	private static File downloadingFile;
+
+	/**
 	 * Read a file using nio
 	 * 
 	 * @param filePath
@@ -121,6 +131,8 @@ public final class Util {
 		ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 		FileOutputStream fos = new FileOutputStream(output);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+		downloadingFile = output;
+		downloadingFileSize = fos.getChannel().size();
 		fos.close();
 		return output;
 	}
@@ -302,6 +314,24 @@ public final class Util {
 		if (!file.delete())
 			throw new IOException("Can't delete the file \""
 					+ file.getAbsolutePath() + "\"");
+	}
+
+	/**
+	 * Return the current downloading file
+	 * 
+	 * @return The current downloading file
+	 */
+	public static File getDownloadingFile() {
+		return downloadingFile;
+	}
+
+	/**
+	 * Return the current downloading file size
+	 * 
+	 * @return The current downloading file size
+	 */
+	public static long getDownloadingFileSize() {
+		return downloadingFileSize;
 	}
 
 }

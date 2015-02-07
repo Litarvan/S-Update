@@ -70,6 +70,36 @@ public class S_Update {
 	private File versionIndex;
 
 	/**
+	 * The current state, DOWNLOADING, UNZIPPING, or REMOVNG
+	 */
+	private int state;
+
+	/**
+	 * State DOWNLOADING
+	 */
+	public static final int DOWNLOADING = 0;
+
+	/**
+	 * State UNZIPPING
+	 */
+	public static final int UNZIPPING = 1;
+
+	/**
+	 * The current downloading/unzipping/removing file number
+	 */
+	private int fileNumber;
+
+	/**
+	 * The number of files to download/unzip/remove
+	 */
+	private int numberOfFiles;
+
+	/**
+	 * State REMOVING
+	 */
+	public static final int REMOVING = 2;
+	
+	/**
 	 * Base constructor
 	 * 
 	 * @param baseURL
@@ -174,13 +204,24 @@ public class S_Update {
 	 *             If it can't download/unzip/remove a file
 	 */
 	public void update() throws IOException {
-		for (FileToUpdate f : filesToDownload) {
+		this.state = DOWNLOADING;
+		this.numberOfFiles = filesToDownload.size();
+		this.fileNumber = 0;
+		for (int i = 0; i < filesToDownload.size(); i++) {
+			FileToUpdate f = filesToDownload.get(i);
+			this.fileNumber++;
 			System.out.println("[S-Update] Downloading " + this.baseURL
 					+ "/Files/" + f);
 			Util.downloadFile(new URL(this.baseURL + "/Files/" + f), new File(
 					this.outputFolder, f.toString()));
 		}
-		for (FileToUpdate f : filesToUnzip) {
+
+		this.state = UNZIPPING;
+		this.numberOfFiles = filesToUnzip.size();
+		this.fileNumber = 0;
+		for (int i = 0; i < filesToUnzip.size(); i++) {
+			FileToUpdate f = filesToUnzip.get(i);
+			this.fileNumber++;
 			System.out.println("[S-Update] Downloading " + this.baseURL
 					+ "/Files/" + f);
 			File zipFile = new File(this.outputFolder, f.toString());
@@ -191,7 +232,13 @@ public class S_Update {
 			Util.unzip(file, zipFile.getParentFile());
 			Util.remove(zipFile);
 		}
-		for (FileToUpdate f : filesToRemove) {
+
+		this.state = REMOVING;
+		this.numberOfFiles = filesToRemove.size();
+		this.fileNumber = 0;
+		for (int i = 0; i < filesToRemove.size(); i++) {
+			FileToUpdate f = filesToRemove.get(i);
+			this.fileNumber++;
 			System.out.println("[S-Update] Removing "
 					+ this.outputFolder.getAbsolutePath() + "/" + f);
 			Util.remove(new File(this.outputFolder, f.toString()));
@@ -245,4 +292,30 @@ public class S_Update {
 		this.outputFolder.mkdirs();
 	}
 
+	/**
+	 * Return the current state, DOWNLOADING, UNZIPPING, REMOVING
+	 * 
+	 * @return The current state
+	 */
+	public int getState() {
+		return this.state;
+	}
+
+	/**
+	 * Return the current downloading/unzipping/removing file number
+	 * 
+	 * @return The current file number
+	 */
+	public int getFileNumber() {
+		return this.fileNumber;
+	}
+
+	/**
+	 * Return the number of files to download/unzip/remove
+	 * 
+	 * @return The number of files to download/unzip/remove
+	 */
+	public int getNumberOfFiles() {
+		return this.numberOfFiles;
+	}
 }
