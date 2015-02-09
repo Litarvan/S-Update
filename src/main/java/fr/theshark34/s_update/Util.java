@@ -371,5 +371,5 @@ public final class Util {
 	public static long getDownloadingFileSize() {
 		return downloadingFileSize;
 	}
-	
+
 }
