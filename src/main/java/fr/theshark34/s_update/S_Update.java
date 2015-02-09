@@ -219,8 +219,7 @@ public class S_Update {
 		this.state = DOWNLOADING;
 		this.numberOfFiles = filesToDownload.size();
 		this.fileNumber = 0;
-		for (int i = 0; i < filesToDownload.size(); i++)
-		{
+		for (int i = 0; i < filesToDownload.size(); i++) {
 			FileToUpdate f = filesToDownload.get(i);
 			this.currentFileName = f.toString();
 			this.fileNumber++;
