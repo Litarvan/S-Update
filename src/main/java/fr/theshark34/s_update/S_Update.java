@@ -1,3 +1,4 @@
+package fr.theshark34.s_update;
 /*
  * Copyright 2015 TheShark34
  * 
@@ -14,7 +15,7 @@
  * permissions and limitations under the License.
  */
 
-package fr.theshark34.s_update;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +89,11 @@ public class S_Update {
 	 * State REMOVING
 	 */
 	public static final int REMOVING = 2;
+	
+	/**
+	 * State FINISH
+	 */
+	public static final int FINISH = 3;
 
 	/**
 	 * The current downloading/unzipping/removing file number
@@ -155,6 +161,7 @@ public class S_Update {
 					+ versionsToUpdate.size() + " versions");
 		else
 			System.out.println("[S-Update] Up to date !");
+		
 		return needUpdate;
 	}
 
@@ -212,7 +219,8 @@ public class S_Update {
 		this.state = DOWNLOADING;
 		this.numberOfFiles = filesToDownload.size();
 		this.fileNumber = 0;
-		for (int i = 0; i < filesToDownload.size(); i++) {
+		for (int i = 0; i < filesToDownload.size(); i++)
+		{
 			FileToUpdate f = filesToDownload.get(i);
 			this.currentFileName = f.toString();
 			this.fileNumber++;
@@ -222,10 +230,10 @@ public class S_Update {
 					this.outputFolder, f.toString()));
 		}
 
-		this.state = UNZIPPING;
 		this.numberOfFiles = filesToUnzip.size();
 		this.fileNumber = 0;
 		for (int i = 0; i < filesToUnzip.size(); i++) {
+			this.state = DOWNLOADING;
 			FileToUpdate f = filesToUnzip.get(i);
 			this.currentFileName = f.toString();
 			this.fileNumber++;
@@ -234,6 +242,7 @@ public class S_Update {
 			File zipFile = new File(this.outputFolder, f.toString());
 			File file = Util.downloadFile(
 					new URL(this.baseURL + "/Files/" + f), zipFile);
+			this.state = UNZIPPING;
 			System.out
 					.println("[S-Update] Unzipping " + file.getAbsolutePath());
 			Util.unzip(file, zipFile.getParentFile());
@@ -257,6 +266,7 @@ public class S_Update {
 			localVersionIndex.deleteOnExit();
 		else
 			versionIndex.renameTo(localVersionIndex);
+		this.state = FINISH;
 		System.out.println("[S-Update] Up to date !");
 	}
 
