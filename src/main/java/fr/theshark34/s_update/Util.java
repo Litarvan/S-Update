@@ -44,6 +44,16 @@ import java.util.zip.ZipFile;
 public final class Util {
 
 	/**
+	 * The size of the current unziping file
+	 */
+	private static long unzipingFileSize;
+	
+	/**
+	 * The current downloading file
+	 */
+	private static long unzipingLen;
+	
+	/**
 	 * The size of the current downloading file
 	 */
 	private static long downloadingFileSize;
@@ -132,8 +142,7 @@ public final class Util {
 		downloadingFile = output;
 		URLConnection connection = url.openConnection();
 		downloadingFileSize = connection.getContentLengthLong();
-		ReadableByteChannel rbc = Channels.newChannel(connection
-				.getInputStream());
+		ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
 		FileOutputStream fos = new FileOutputStream(output);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
@@ -276,10 +285,16 @@ public final class Util {
 			throws IOException {
 		ZipFile zipFile = new ZipFile(fileToUnzip);
 		Enumeration<?> enu = zipFile.entries();
+		unzipingFileSize = 0;
+		unzipingLen = 0;
+		while (enu.hasMoreElements())
+			unzipingFileSize += (long)((ZipEntry) enu.nextElement()).getSize();
+		enu = zipFile.entries();
 		while (enu.hasMoreElements()) {
 			ZipEntry zipEntry = (ZipEntry) enu.nextElement();
 			String name = zipEntry.getName();
 			File file = new File(outputFolder, name);
+			downloadingFile = file;
 			if (name.endsWith("/")) {
 				file.mkdirs();
 				continue;
@@ -291,8 +306,10 @@ public final class Util {
 			FileOutputStream fos = new FileOutputStream(file);
 			byte[] bytes = new byte[1024];
 			int length;
-			while ((length = is.read(bytes)) >= 0)
+			while ((length = is.read(bytes)) >= 0) {
 				fos.write(bytes, 0, length);
+				unzipingLen += length;
+			}
 			is.close();
 			fos.close();
 		}
@@ -320,6 +337,24 @@ public final class Util {
 	}
 
 	/**
+	 * Return the current unziping length file
+	 * 
+	 * @return The current unziping length file
+	 */
+	public static long getUnzipingFileLen() {
+		return unzipingLen;
+	}
+
+	/**
+	 * Return the current unziping file size
+	 * 
+	 * @return The current unziping file size
+	 */
+	public static long getUnzipingFileSize() {
+		return unzipingFileSize;
+	}
+
+	/**
 	 * Return the current downloading file
 	 * 
 	 * @return The current downloading file
@@ -336,5 +371,5 @@ public final class Util {
 	public static long getDownloadingFileSize() {
 		return downloadingFileSize;
 	}
-
+	
 }
