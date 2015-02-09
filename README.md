@@ -19,7 +19,7 @@ Add the following lines to your pom.xml
     <dependency>
       <groupId>fr.theshark34.s-update</groupId>
       <artifactId>s-update</artifactId>
-      <version>0.1.1-ALPHA</version>
+      <version>0.1.2-ALPHA</version>
     </dependency>
  </dependencies>
  
