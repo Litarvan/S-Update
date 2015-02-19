@@ -23,8 +23,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -140,7 +140,8 @@ public final class Util {
 	public static File downloadFile(URL url, File output) throws IOException {
 		output.getParentFile().mkdirs();
 		downloadingFile = output;
-		URLConnection connection = url.openConnection();
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.addRequestProperty("User-Agent", "Mozilla/4.76");
 		downloadingFileSize = connection.getContentLengthLong();
 		ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
 		FileOutputStream fos = new FileOutputStream(output);
