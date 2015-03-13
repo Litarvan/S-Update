@@ -142,7 +142,7 @@ public final class Util {
 		downloadingFile = output;
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.addRequestProperty("User-Agent", "Mozilla/4.76");
-		downloadingFileSize = connection.getContentLengthLong();
+		downloadingFileSize = connection.getContentLength();
 		ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
 		FileOutputStream fos = new FileOutputStream(output);
 		fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
