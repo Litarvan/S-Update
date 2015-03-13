@@ -18,7 +18,7 @@ Add the following lines to your pom.xml
     ...
     <dependency>
       <groupId>fr.theshark34.s-update</groupId>
-      <artifactId>s-update-java6</artifactId>
+      <artifactId>s-update</artifactId>
       <version>0.1.3-ALPHA</version>
     </dependency>
  </dependencies>
