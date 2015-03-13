@@ -13,7 +13,6 @@
  * implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
 package fr.theshark34.s_update;
 
 import java.io.BufferedReader;

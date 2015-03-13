@@ -1,4 +1,3 @@
-package fr.theshark34.s_update;
 /*
  * Copyright 2015 TheShark34
  * 
@@ -14,8 +13,7 @@ package fr.theshark34.s_update;
  * implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-
-
+package fr.theshark34.s_update;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,10 +133,6 @@ public class S_Update {
 	public boolean checkForUpdate() throws IOException {
 		File localVersionIndex = new File(this.outputFolder.getAbsolutePath()
 				+ "/.S_Update/versionindex.txt");
-		File tmpVersionIndex = new File(this.outputFolder.getAbsolutePath()
-				+ "/.S_Update/versionindex.tmp.txt");
-		if (!localVersionIndex.exists() && tmpVersionIndex.exists())
-			tmpVersionIndex.renameTo(localVersionIndex);
 		System.out.println("[S-Update] Checking for update...");
 		versionIndex = Util.downloadVersionFile(this);
 		ArrayList<String> versions = Util.parseVersionIndex(versionIndex);
@@ -181,11 +175,15 @@ public class S_Update {
 			for (FileToUpdate f : files) {
 				switch (f.getAction()) {
 				case FileToUpdate.DOWNLOAD:
-					if (!Util.contains(filesToDownload, f))
+					if (Util.contains(filesToRemove, f))
+						Util.remove(filesToRemove, f);
+					else if (!Util.contains(filesToDownload, f))
 						filesToDownload.add(f);
 					break;
 				case FileToUpdate.UNZIP:
-					if (!Util.contains(filesToUnzip, f))
+					if (Util.contains(filesToRemove, f))
+						Util.remove(filesToRemove, f);
+					else if (!Util.contains(filesToUnzip, f))
 						filesToUnzip.add(f);
 					break;
 				case FileToUpdate.REMOVE:
@@ -217,7 +215,7 @@ public class S_Update {
 	 */
 	public void update() throws IOException {
 		this.state = DOWNLOADING;
-		this.numberOfFiles = filesToDownload.size();
+		this.numberOfFiles = filesToDownload.size() + filesToUnzip.size();
 		this.fileNumber = 0;
 		for (int i = 0; i < filesToDownload.size(); i++) {
 			FileToUpdate f = filesToDownload.get(i);
@@ -229,8 +227,6 @@ public class S_Update {
 					this.outputFolder, f.toString()));
 		}
 
-		this.numberOfFiles = filesToUnzip.size();
-		this.fileNumber = 0;
 		for (int i = 0; i < filesToUnzip.size(); i++) {
 			this.state = DOWNLOADING;
 			FileToUpdate f = filesToUnzip.get(i);
