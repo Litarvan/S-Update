@@ -87,7 +87,7 @@ public class S_Update {
 	 * State REMOVING
 	 */
 	public static final int REMOVING = 2;
-	
+
 	/**
 	 * State FINISH
 	 */
@@ -131,12 +131,20 @@ public class S_Update {
 	 *             If it failed downloading or reading the version file
 	 */
 	public boolean checkForUpdate() throws IOException {
+		System.out.println("[S-Update] Checking for update...");
 		File localVersionIndex = new File(this.outputFolder.getAbsolutePath()
 				+ "/.S_Update/versionindex.txt");
-		System.out.println("[S-Update] Checking for update...");
+		File tmpVersionIndex = new File(this.outputFolder.getAbsolutePath()
+				+ "/.S_Update/versionindex.tmp.txt");
+		File updating = new File(this.outputFolder, "/.S_Update/updating");
+		if (!updating.exists() && tmpVersionIndex.exists()) {
+			localVersionIndex.delete();
+			tmpVersionIndex.renameTo(localVersionIndex);
+		} else if (updating.exists())
+			if (!updating.delete())
+				updating.deleteOnExit();
 		versionIndex = Util.downloadVersionFile(this);
 		ArrayList<String> versions = Util.parseVersionIndex(versionIndex);
-
 		if (!localVersionIndex.exists()) {
 			versionsToUpdate = versions;
 			System.out.println("[S-Update] Need to install "
@@ -155,7 +163,7 @@ public class S_Update {
 					+ versionsToUpdate.size() + " versions");
 		else
 			System.out.println("[S-Update] Up to date !");
-		
+
 		return needUpdate;
 	}
 
@@ -214,6 +222,8 @@ public class S_Update {
 	 *             If it can't download/unzip/remove a file
 	 */
 	public void update() throws IOException {
+		File updating = new File(this.outputFolder, "/.S_Update/updating");
+		updating.createNewFile();
 		this.state = DOWNLOADING;
 		this.numberOfFiles = filesToDownload.size() + filesToUnzip.size();
 		this.fileNumber = 0;
@@ -262,6 +272,8 @@ public class S_Update {
 		else
 			versionIndex.renameTo(localVersionIndex);
 		this.state = FINISH;
+		if (!updating.delete())
+			updating.deleteOnExit();
 		System.out.println("[S-Update] Up to date !");
 	}
 
