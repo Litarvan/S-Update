@@ -18,7 +18,7 @@ package fr.theshark34.s_update;
 /**
  * A File with an action to be executed when updating
  * 
- * @version ALPHA-0.1.1
+ * @version RELEASE-1.0
  * @author TheShark34
  */
 public class FileToUpdate {
