@@ -28,7 +28,7 @@ import java.io.IOException;
  * @version 1.0-RELEASE
  * @author TheShark34
  */
-public class S_Update {
+public class SUpdate {
 
 	/**
 	 * The base URL for files in cloud (ex:
@@ -50,7 +50,7 @@ public class S_Update {
 	 * @param outputFolder
 	 *            The folder that contains the files to update
 	 */
-	public S_Update(String baseURL, File outputFolder) {
+	public SUpdate(String baseURL, File outputFolder) {
 		// Settings base fields
 		this.baseURL = baseURL;
 		this.outputFolder = outputFolder;
