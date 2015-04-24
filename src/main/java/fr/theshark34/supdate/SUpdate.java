@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.s_update;
+package fr.theshark34.supdate;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,8 @@ public class SUpdate {
 	}
 
 	/**
-	 * Sends a prepare request to the PHP S-Update and getting the tasks
+	 * Sends the main request to the S-Update server, gets the send files informations,
+     * compares it, and synchronyses the local folder.
 	 * 
 	 * @throws IOException
 	 *             If it can't download/unzip/remove a file
