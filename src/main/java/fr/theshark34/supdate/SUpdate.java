@@ -97,7 +97,7 @@ public class SUpdate {
             // If the action is DOWNLOAD
             if(ftu.getAction() == FileToUpdate.DOWNLOAD)
                 // Downloading it
-                downloader.download(new URL(baseURL + (baseURL.endsWith("/") ? "" : "/") + ftu.getFile().getAbsolutePath().replace(outputFolder.getAbsolutePath(), "")), ftu.getFile());
+                downloader.download(new URL(baseURL + (baseURL.endsWith("/") ? "" : "/") + ftu.getFile().getAbsolutePath().replace(outputFolder.getAbsolutePath(), "")), ftu.getFile(), ftu.getLastModified());
             // Else if the action is REMOVING
             else if (ftu.getAction() == FileToUpdate.REMOVE)
                 // Removing it
@@ -149,9 +149,11 @@ public class SUpdate {
     /**
      * Returns a list of the files to download / remove
      *
+     * @throws IOException
+     *            If it failed to get the files to ignore
      * @return A list of files to update
      */
-    private ArrayList<FileToUpdate> getFilesToUpdate(ArrayList<OnlineFile> onlineFiles) {
+    private ArrayList<FileToUpdate> getFilesToUpdate(ArrayList<OnlineFile> onlineFiles) throws IOException {
         // Initializing an empty array list
         ArrayList<FileToUpdate> filesToUpdate = new ArrayList<FileToUpdate>();
 
@@ -165,6 +167,9 @@ public class SUpdate {
 
             // If it doesn't exist or the dates aren't the same
             if(!localFile.exists() || onlineFile.getLastModified() != localFile.lastModified()) {
+                // TODO: Remove this test message
+                System.out.println(localFile.exists() + " " + onlineFile.getLastModified() + " " + localFile.lastModified());
+
                 // Adding it to the list as a file to download
                 filesToUpdate.add(new FileToUpdate(this, onlineFile));
 
@@ -176,6 +181,15 @@ public class SUpdate {
             }
         }
 
+        // Creating the FileIgnorer
+        FileIgnorer fileIgnorer = new FileIgnorer(this);
+
+        // Printing a message
+        System.out.println("[S-Update] Getting the files to ignore");
+
+        // Getting the files to ignore
+        fileIgnorer.getFilesToIgnore();
+
         // Printing a message
         System.out.println("[S-Update] Checking for local files to delete");
 
@@ -185,7 +199,7 @@ public class SUpdate {
         // For each files in the list
         for(File localFile : localFiles)
             // If it isn't in the online files list
-            if(!Util.contains(this, onlineFiles, localFile)) {
+            if(!Util.contains(this, onlineFiles, localFile) && !fileIgnorer.needToIgnore(localFile)) {
                 // Adding it to the list as a file to remove
                 filesToUpdate.add(new FileToUpdate(localFile));
 

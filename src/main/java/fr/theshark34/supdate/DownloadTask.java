@@ -45,30 +45,44 @@ public class DownloadTask implements Runnable {
 	private File output;
 
     /**
+     * The last modified date to set after downloaded the file
+     */
+    private long lastModified;
+
+    /**
      * Basic constructor
      *
      * @param url
      *            The URL of the file
      * @param output
      *            The file destination
+     * @param lastModified
+     *            The last modified date to set after downloaded the file
      */
-	public DownloadTask(URL url, File output) {
+	public DownloadTask(URL url, File output, long lastModified) {
 		this.url = url;
 		this.output = output;
+        this.lastModified = lastModified;
 	}
 
 	@Override
 	public void run() {
+        // Printing a message
 		System.out.println("[S-Update] Downloading file " + url);
 
+        // Downloading the file
 		try {
 			Downloader.downloadFile(url, output);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
+            // Printing a finished message
 			System.out
 					.println("[S-Update] Finished to download file "
 							+ url);
+
+            // Setting the last modified date
+            output.setLastModified(lastModified);
 		}
 	}
 

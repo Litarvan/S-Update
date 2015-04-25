@@ -49,6 +49,9 @@ public class Util {
             File file = new File(su.getOutputFolder(), onlineFile.getFile());
             if(file.getAbsolutePath().equals(localFile.getAbsolutePath()))
                 return true;
+            else
+                // TODO: Remove this test message
+                System.out.println("\"" + file.getAbsolutePath() + "\" != \"" + localFile.getAbsolutePath() + "\"");
         }
         return false;
     }

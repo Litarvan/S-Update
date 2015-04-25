@@ -40,11 +40,28 @@ import java.util.concurrent.Executors;
  */
 public class Downloader {
 
+    /**
+     * The executor service (multi-threaded task executor)
+     */
     private ExecutorService pool = Executors.newFixedThreadPool(10);
+
+    /**
+     * The total number of downloaded files
+     */
     private static int totalDownloaded = 0;
 
-    public void download(URL url, File file) throws IOException {
-        pool.execute(new DownloadTask(url, file));
+    /**
+     * Adds a download task to the executor service
+     *
+     * @param url
+     *            The URL of the file to download
+     * @param file
+     *            The file destination
+     * @param lastModified
+     *            The last modified date to set after downloaded
+     */
+    public void download(URL url, File file, long lastModified) {
+        pool.execute(new DownloadTask(url, file, lastModified));
     }
 
     public static void downloadFile(URL url, File file) throws IOException {
@@ -64,6 +81,11 @@ public class Downloader {
         totalDownloaded++;
     }
 
+    /**
+     * Returns the total number of downloaded files
+     *
+     * @return The download files number
+     */
     public static int getTotalDownloaded() {
         return totalDownloaded;
     }
