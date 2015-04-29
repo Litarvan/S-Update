@@ -287,9 +287,4 @@ public class SUpdate {
         return numberOfFilesToRemove;
     }
 
-    public static void main(String[] args) throws IOException {
-        SUpdate su = new SUpdate("http://localhost/retruc/", new File("C:/Users/Adrien/Documents/RETESTU"));
-        su.update();
-    }
-
 }
