@@ -49,9 +49,6 @@ public class Util {
             File file = new File(su.getOutputFolder(), onlineFile.getFile());
             if(file.getAbsolutePath().equals(localFile.getAbsolutePath()))
                 return true;
-            else
-                // TODO: Remove this test message
-                System.out.println("\"" + file.getAbsolutePath() + "\" != \"" + localFile.getAbsolutePath() + "\"");
         }
         return false;
     }
@@ -63,7 +60,7 @@ public class Util {
      *            The folder to list
      * @return A list of the listed files
      */
-    public static ArrayList<File> listFiles(File folder) {
+    public static ArrayList<File> listFiles(File folder, FileIgnorer ignorer) {
         ArrayList<File> files = new ArrayList<File>();
 
         if(!folder.isDirectory())
@@ -71,8 +68,10 @@ public class Util {
 
         File[] folderFiles = folder.listFiles();
         for(File f : folderFiles)
-            if(f.isDirectory())
-                files.addAll(listFiles(f));
+            if(ignorer.needToIgnore(f))
+                continue;
+            else if(f.isDirectory())
+                files.addAll(listFiles(f, ignorer));
             else
                 files.add(f);
 

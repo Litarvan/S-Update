@@ -19,6 +19,7 @@
 package fr.theshark34.supdate;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -48,9 +49,15 @@ public class Server {
      * @return A BufferedReader for the request response
      */
     public static BufferedReader sendRequest(SUpdate su, String request) throws IOException {
-        URL serverURL = new URL(su.getBaseURL() + "/s-update.php");
+        URL serverURL = new URL(su.getBaseURL() + "/server.php");
         HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
-        connection.addRequestProperty("request", request);
+        connection.setRequestMethod("POST");
+        // Send post request
+        connection.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+        wr.writeBytes("request=" + request);
+        wr.flush();
+        wr.close();
         connection.connect();
         return new BufferedReader(new InputStreamReader(connection.getInputStream()));
     }

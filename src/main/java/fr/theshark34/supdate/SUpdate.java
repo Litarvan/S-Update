@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The main class - Initialize it with the url of the update folder and
@@ -78,6 +79,9 @@ public class SUpdate {
 	 *             If it can't download/unzip/remove a file
 	 */
 	public void update() throws IOException {
+        // Stocking the start time
+        long startTime = System.currentTimeMillis();
+
 		// Printing the infos
 		System.out.println("[S-Update] Starting updating with : ");
         System.out.println("[S-Update]     URL           : " + baseURL);
@@ -97,15 +101,32 @@ public class SUpdate {
             // If the action is DOWNLOAD
             if(ftu.getAction() == FileToUpdate.DOWNLOAD)
                 // Downloading it
-                downloader.download(new URL(baseURL + (baseURL.endsWith("/") ? "" : "/") + ftu.getFile().getAbsolutePath().replace(outputFolder.getAbsolutePath(), "")), ftu.getFile(), ftu.getLastModified());
+                downloader.download(new URL(baseURL + (baseURL.endsWith("/") ? "" : "/") + "files" + ftu.getFile().getAbsolutePath().replace(outputFolder.getAbsolutePath(), "").replace("\\", "/")), ftu.getFile(), ftu.getLastModified());
             // Else if the action is REMOVING
-            else if (ftu.getAction() == FileToUpdate.REMOVE)
+            else if (ftu.getAction() == FileToUpdate.REMOVE) {
                 // Removing it
-               if(!ftu.getFile().delete())
-                   ftu.getFile().deleteOnExit();
+                if (!ftu.getFile().delete())
+                    ftu.getFile().deleteOnExit();
+                System.out.println("[S-Update] Deleting file " + ftu.getFile().getAbsolutePath());
+            }
 
-		// Printing an "up to date" message
-		System.out.println("[S-Update] Terminated !");
+        // Closing the pool
+        downloader.getPool().shutdown();
+
+        // Printing a message
+        System.out.println("[S-Update] Waiting for the downloads");
+        try {
+            // Waiting for the pool to terminate
+            downloader.getPool().awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+
+            // Printing an "up to date" message
+            System.out.println("[S-Update] Terminated ! Total time : " + (System.currentTimeMillis() - startTime) + "ms");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+            // Printing a message
+            System.out.println("[S-Update] Can't wait for the pool !");
+        }
 	}
 
     /**
@@ -133,7 +154,7 @@ public class SUpdate {
             String line = br.readLine();
 
             // Splitting the line in two parts separated by a '|'
-            String[] infos = line.split("|");
+            String[] infos = line.split("\\|");
 
             // Adding a new OnlineFile object with the first part as the file name
             // and the second part as the file last modified date
@@ -167,9 +188,6 @@ public class SUpdate {
 
             // If it doesn't exist or the dates aren't the same
             if(!localFile.exists() || onlineFile.getLastModified() != localFile.lastModified()) {
-                // TODO: Remove this test message
-                System.out.println(localFile.exists() + " " + onlineFile.getLastModified() + " " + localFile.lastModified());
-
                 // Adding it to the list as a file to download
                 filesToUpdate.add(new FileToUpdate(this, onlineFile));
 
@@ -194,12 +212,12 @@ public class SUpdate {
         System.out.println("[S-Update] Checking for local files to delete");
 
         // Getting the list of the files in the outputFolder
-        ArrayList<File> localFiles = Util.listFiles(this.outputFolder);
+        ArrayList<File> localFiles = Util.listFiles(this.outputFolder, fileIgnorer);
 
         // For each files in the list
         for(File localFile : localFiles)
             // If it isn't in the online files list
-            if(!Util.contains(this, onlineFiles, localFile) && !fileIgnorer.needToIgnore(localFile)) {
+            if(!Util.contains(this, onlineFiles, localFile)) {
                 // Adding it to the list as a file to remove
                 filesToUpdate.add(new FileToUpdate(localFile));
 
@@ -267,6 +285,11 @@ public class SUpdate {
      */
     public int getNumberOfFilesToRemove() {
         return numberOfFilesToRemove;
+    }
+
+    public static void main(String[] args) throws IOException {
+        SUpdate su = new SUpdate("http://localhost/retruc/", new File("C:/Users/Adrien/Documents/RETESTU"));
+        su.update();
     }
 
 }

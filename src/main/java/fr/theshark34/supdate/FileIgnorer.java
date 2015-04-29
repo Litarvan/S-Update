@@ -54,6 +54,8 @@ public class FileIgnorer {
      */
     public FileIgnorer(SUpdate su) {
         this.su = su;
+        // Initializing the list
+        filesToIgnore = new ArrayList<String>();
     }
 
     /**
@@ -66,9 +68,17 @@ public class FileIgnorer {
         BufferedReader br = Server.sendRequest(su, "filestoignore");
 
         // For each read line
-        while(br.ready())
+        while(br.ready()) {
+            // Getting the line
+            String line = br.readLine();
+
+            // Removing the slash if there is one at the end
+            if(line.endsWith("/") || line.endsWith("\\"))
+                line = line.substring(0, line.length() - 1);
+
             // Adding it to the file to ignore list
-            filesToIgnore.add(br.readLine());
+            filesToIgnore.add(line);
+        }
 
         // Closing the reader
         br.close();
@@ -85,12 +95,9 @@ public class FileIgnorer {
         // For each files to ignore
         for(String fileToIgnore : filesToIgnore)
             // If the file to ignore with a '/' at the end equals the file absolute path without the output folder absolute path at the start
-            if((fileToIgnore + "/").equals(file.getAbsolutePath().replace(su.getOutputFolder().getAbsolutePath(), "")))
+            if(fileToIgnore.equals(file.getAbsolutePath().replace(su.getOutputFolder().getAbsolutePath(), "").replace("\\", "/").replaceFirst("/", "")))
                 // Returning true
                 return true;
-            else
-                // TODO: Remove this test message
-                System.out.println("\"" + fileToIgnore + "/\" != \"" + file.getAbsolutePath().replace(su.getOutputFolder().getAbsolutePath(), "") + "\"");
         return false;
     }
 

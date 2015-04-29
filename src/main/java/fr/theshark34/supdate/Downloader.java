@@ -90,4 +90,13 @@ public class Downloader {
         return totalDownloaded;
     }
 
+    /**
+     * s the executor service
+     *
+     * @return The executor service
+     */
+    public ExecutorService getPool() {
+        return this.pool;
+    }
+
 }
