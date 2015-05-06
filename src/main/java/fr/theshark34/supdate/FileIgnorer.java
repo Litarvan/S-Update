@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *     deleting the useless files.
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class FileIgnorer {
@@ -65,7 +65,7 @@ public class FileIgnorer {
      */
     public void getFilesToIgnore() throws IOException {
         // Sending the filetoignore request
-        BufferedReader br = Server.sendRequest(su, "filestoignore");
+        BufferedReader br = Server.getFile(su, "su_ignore.idx");
 
         // For each read line
         while(br.ready()) {

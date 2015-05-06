@@ -18,10 +18,13 @@
  */
 package fr.theshark34.supdate;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * The main class - Initialize it with the url of the update folder and
  * the output folder to start updating !
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class SUpdate {
@@ -72,11 +75,10 @@ public class SUpdate {
 	}
 
 	/**
-	 * Sends the main request to the S-Update server, gets the send files informations,
-     * compares it, and synchronyses the local folder.
+	 * Synchronise the local folder with the server folder
 	 * 
 	 * @throws IOException
-	 *             If it can't download/unzip/remove a file
+	 *             If it can't download/remove a file
 	 */
 	public void update() throws IOException {
         // Stocking the start time
@@ -87,11 +89,21 @@ public class SUpdate {
         System.out.println("[S-Update]     URL           : " + baseURL);
         System.out.println("[S-Update]     Output folder : " + outputFolder.getAbsolutePath());
 
+        // Printing a message
+        System.out.println("[S-Update] Updating server stats");
+
+        // Updating server stats
+        Server.updateStats(this);
+
         // Listing the online files
         ArrayList<OnlineFile> onlineFiles = getOnlineFilesList();
 
         // Getting the files to download
-        ArrayList<FileToUpdate> filesToUpdate = getFilesToUpdate(onlineFiles);
+        ArrayList<FileToUpdate> filesToUpdate = null;
+        try {
+            filesToUpdate = getFilesToUpdate(onlineFiles);
+        } catch (NoSuchAlgorithmException e) {
+        }
 
         // Initializing the download
         Downloader downloader = new Downloader();
@@ -104,10 +116,12 @@ public class SUpdate {
                 downloader.download(new URL(baseURL + (baseURL.endsWith("/") ? "" : "/") + "files" + ftu.getFile().getAbsolutePath().replace(outputFolder.getAbsolutePath(), "").replace("\\", "/")), ftu.getFile(), ftu.getLastModified());
             // Else if the action is REMOVING
             else if (ftu.getAction() == FileToUpdate.REMOVE) {
+                // Printing a message
+                System.out.println("[S-Update] Deleting file " + ftu.getFile().getAbsolutePath());
+
                 // Removing it
                 if (!ftu.getFile().delete())
                     ftu.getFile().deleteOnExit();
-                System.out.println("[S-Update] Deleting file " + ftu.getFile().getAbsolutePath());
             }
 
         // Closing the pool
@@ -130,23 +144,23 @@ public class SUpdate {
 	}
 
     /**
-     * Sends a request to the server and returns the list of the online files returned
+     * Downloads the files index of the server and parse it into an array list of OnlineFile objects
      *
      * @throws IOException
-     *            If it failed to reads / sends the request
+     *            If it failed to read the file
      * @return The list of the online files
      */
     private ArrayList<OnlineFile> getOnlineFilesList() throws IOException {
         // Printing a message
-        System.out.println("[S-Update] Sending the 'list' request to the server");
+        System.out.println("[S-Update] Downloading the files index");
 
         // Creating an array list of OnlineFile
         ArrayList<OnlineFile> onlineFiles = new ArrayList<OnlineFile>();
 
         // Sending the request
-        BufferedReader br = Server.sendRequest(this, "list");
+        BufferedReader br = Server.getFile(this, "su_files.idx");
 
-        System.out.println("[S-Update] Parsing response");
+        System.out.println("[S-Update] Parsing the index");
 
         // Reading the request
         while(br.ready()) {
@@ -157,8 +171,13 @@ public class SUpdate {
             String[] infos = line.split("\\|");
 
             // Adding a new OnlineFile object with the first part as the file name
-            // and the second part as the file last modified date
-            onlineFiles.add(new OnlineFile(infos[0], infos[1]));
+            // and the second part as the file last modified date, if it can't parse
+            // the date, then adding it as the MD5
+            try {
+                onlineFiles.add(new OnlineFile(infos[0], Long.parseLong(infos[1])));
+            } catch (NumberFormatException e) {
+                onlineFiles.add(new OnlineFile(infos[0], infos[1]));
+            }
         }
 
         // Closing the reader
@@ -174,7 +193,7 @@ public class SUpdate {
      *            If it failed to get the files to ignore
      * @return A list of files to update
      */
-    private ArrayList<FileToUpdate> getFilesToUpdate(ArrayList<OnlineFile> onlineFiles) throws IOException {
+    private ArrayList<FileToUpdate> getFilesToUpdate(ArrayList<OnlineFile> onlineFiles) throws IOException, NoSuchAlgorithmException {
         // Initializing an empty array list
         ArrayList<FileToUpdate> filesToUpdate = new ArrayList<FileToUpdate>();
 
@@ -186,8 +205,9 @@ public class SUpdate {
             // Getting the local file
             File localFile = new File(this.outputFolder, onlineFile.getFile());
 
-            // If it doesn't exist or the dates aren't the same
-            if(!localFile.exists() || onlineFile.getLastModified() != localFile.lastModified()) {
+            // If it doesn't exist or the dates aren't the same or if the date are null, the md5 aren't the same
+            if(!localFile.exists() || (onlineFile.getLastModified() != 0 && onlineFile.getLastModified() != localFile.lastModified()) ||
+                    (onlineFile.getMD5() != null && !onlineFile.getMD5().equals(Util.getMD5(localFile)))) {
                 // Adding it to the list as a file to download
                 filesToUpdate.add(new FileToUpdate(this, onlineFile));
 

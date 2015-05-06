@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
  *     Multi Threaded downloader
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class Downloader {

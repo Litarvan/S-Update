@@ -27,7 +27,7 @@ import java.io.File;
  *     A Class to stock the informations of a file that need to be downloaded / unzipped / removed
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class FileToUpdate {
@@ -58,6 +58,11 @@ public class FileToUpdate {
     private long lastModified;
 
     /**
+     * The MD5 of the file
+     */
+    private String md5;
+
+    /**
      * File to download constructor
      *
      * @param su
@@ -67,7 +72,10 @@ public class FileToUpdate {
      */
     public FileToUpdate(SUpdate su, OnlineFile onlineFile) {
         this.file = new File(su.getOutputFolder(), onlineFile.getFile());
-        this.lastModified = onlineFile.getLastModified();
+        if(onlineFile.getLastModified() != 0)
+            this.lastModified = onlineFile.getLastModified();
+        else
+            this.md5 = onlineFile.getMD5();
     }
 
     /**

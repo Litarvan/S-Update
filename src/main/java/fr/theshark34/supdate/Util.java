@@ -19,6 +19,11 @@
 package fr.theshark34.supdate;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +33,7 @@ import java.util.ArrayList;
  *     A Class containing some usefull methods
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class Util {
@@ -76,6 +81,41 @@ public class Util {
                 files.add(f);
 
         return files;
+    }
+
+    /**
+     * Gets the MD5 of a file
+     *
+     * @param file
+     *            The file to get the MD5
+     * @throws IOException
+     *            If it failed to read the file
+     * @throws NoSuchAlgorithmException
+     *            If it failed to get the MD5 algorithm
+     * @return The generated MD5
+     */
+    public static String getMD5(File file) throws IOException, NoSuchAlgorithmException{
+        InputStream fis =  new FileInputStream(file);
+
+        byte[] buffer = new byte[1024];
+        MessageDigest complete = MessageDigest.getInstance("MD5");
+        int numRead;
+
+        do {
+            numRead = fis.read(buffer);
+            if (numRead > 0)
+                complete.update(buffer, 0, numRead);
+        } while (numRead != -1);
+
+        fis.close();
+
+        byte[] bytes = complete.digest();
+        String md5 = "";
+
+        for (int i=0; i < bytes.length; i++)
+            md5 += Integer.toString( ( bytes[i] & 0xff ) + 0x100, 16).substring( 1 );
+
+        return md5;
     }
 
 }

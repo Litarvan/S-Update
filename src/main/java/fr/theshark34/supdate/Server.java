@@ -18,10 +18,7 @@
  */
 package fr.theshark34.supdate;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -38,28 +35,48 @@ import java.net.URL;
 public class Server {
 
     /**
-     * Sends a request to the server
+     * Gets a file of the server
      *
      * @param su
      *            The current SUpdate instance to get the base URL
-     * @param request
-     *            The request to send
+     * @param file
+     *            The file to gets
      * @throws IOException
      *            If it failed something
-     * @return A BufferedReader for the request response
+     * @return A BufferedReader for the file
      */
-    public static BufferedReader sendRequest(SUpdate su, String request) throws IOException {
+    public static BufferedReader getFile(SUpdate su, String file) throws IOException {
+        URL url = new URL(su.getBaseURL() + "/" + file);
+        File tmp = new File(System.getProperty("user.home") + "/.sutmp");
+        BufferedReader br;
+
+        Downloader.downloadFile(url, tmp);
+        br = new BufferedReader(new FileReader(tmp));
+
+        return br;
+    }
+
+    /**
+     * Updates the server stats
+     *
+     * @param su
+     *            The current SUpdate instance to get the base URL
+     * @throws IOException
+     *            If it failed something
+     */
+    public static void updateStats(SUpdate su) throws IOException {
         URL serverURL = new URL(su.getBaseURL() + "/server.php");
         HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
         connection.setRequestMethod("POST");
-        // Send post request
+
+        // Sending post request
         connection.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-        wr.writeBytes("request=" + request);
+        wr.writeBytes("request=updateStats");
         wr.flush();
         wr.close();
+
         connection.connect();
-        return new BufferedReader(new InputStreamReader(connection.getInputStream()));
     }
 
 }

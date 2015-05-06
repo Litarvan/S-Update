@@ -29,7 +29,7 @@ import java.net.URL;
  *     A Task that download a file
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class DownloadTask implements Runnable {
@@ -81,8 +81,9 @@ public class DownloadTask implements Runnable {
 					.println("[S-Update] Finished to download file "
 							+ url);
 
-            // Setting the last modified date
-            output.setLastModified(lastModified);
+            // Setting the last modified date if it is not 0
+            if(lastModified != 0)
+                output.setLastModified(lastModified);
 		}
 	}
 

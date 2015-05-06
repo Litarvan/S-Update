@@ -25,7 +25,7 @@ package fr.theshark34.supdate;
  *     A Class to stock the informations of an online file given by the Server
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.1-SNAPSHOT
  * @author TheShark34
  */
 public class OnlineFile {
@@ -38,19 +38,37 @@ public class OnlineFile {
     /**
      * The last modified date of the file
      */
-    private long lastModified;
+    private long lastModified = 0;
 
     /**
-     * Basic constructor
+     * The MD5 of the file
+     */
+    private String md5;
+
+    /**
+     * Basic constructor (with last modified date)
      *
      * @param file
      *            The file
      * @param lastModified
      *            The last modified date of the file
      */
-    public OnlineFile(String file, String lastModified) {
+    public OnlineFile(String file, long lastModified) {
         this.file = file;
-        this.lastModified = Long.parseLong(lastModified);
+        this.lastModified = lastModified;
+    }
+
+    /**
+     * Basic constructor (with MD5)
+     *
+     * @param file
+     *            The file
+     * @param md5
+     *            The last modified date of the file
+     */
+    public OnlineFile(String file, String md5) {
+        this.file = file;
+        this.md5 = md5;
     }
 
     /**
@@ -69,6 +87,15 @@ public class OnlineFile {
      */
     public long getLastModified() {
         return this.lastModified;
+    }
+
+    /**
+     * Returns the md5 of the file
+     *
+     * @return The md5 date of the file
+     */
+    public String getMD5() {
+        return this.md5;
     }
 
 }
