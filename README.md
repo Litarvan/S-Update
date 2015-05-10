@@ -1,4 +1,4 @@
-[![S-Update Logo](http://theshark34.github.io/S-Update-Server/logo.png)](http://theshark34.github.io/S-Update/)
+![S-Update Logo](http://image.noelshack.com/fichiers/2015/18/1430286335-bannieresu.png)
 
 ## How to use it
 
