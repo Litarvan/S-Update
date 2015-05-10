@@ -27,7 +27,7 @@ import java.io.File;
  *     A Class to stock the informations of a file that need to be downloaded / unzipped / removed
  * </p>
  *
- * @version 2.1-SNAPSHOT
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class FileToUpdate {
@@ -36,6 +36,11 @@ public class FileToUpdate {
      * The DOWNLOAD action
      */
     public static final int DOWNLOAD = 0;
+
+    /**
+     * The DOWNNLOAD_AND_UNZIP action
+     */
+    public static final int DOWNLOAD_AND_UNZIP = 1;
 
     /**
      * The REMOVE action
@@ -63,6 +68,11 @@ public class FileToUpdate {
     private String md5;
 
     /**
+     * The zip file if the action is DOWNLOAD_AND_UNZIP
+     */
+    private ZipFile zipFile;
+
+    /**
      * File to download constructor
      *
      * @param su
@@ -76,6 +86,21 @@ public class FileToUpdate {
             this.lastModified = onlineFile.getLastModified();
         else
             this.md5 = onlineFile.getMD5();
+        this.action = DOWNLOAD;
+    }
+
+    /**
+     * File to download and unzip constructor
+     *
+     * @param su
+     *            The SUpdate object to get the output folder
+     * @param zipFile
+     *            The zip file to download
+     */
+    public FileToUpdate(SUpdate su, ZipFile zipFile) {
+        this.file = new File(su.getOutputFolder(), zipFile.getZip());
+        this.zipFile = zipFile;
+        this.action = DOWNLOAD_AND_UNZIP;
     }
 
     /**

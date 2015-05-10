@@ -18,8 +18,6 @@
  */
 package fr.theshark34.supdate;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -29,10 +27,14 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The main class - Initialize it with the url of the update folder and
- * the output folder to start updating !
+ * The main class
  *
- * @version 2.1-SNAPSHOT
+ * <p>
+ *     Initialize it with the url of the update folder and
+ *     the output folder to start updating !
+ * </p>
+ *
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class SUpdate {
@@ -98,10 +100,13 @@ public class SUpdate {
         // Listing the online files
         ArrayList<OnlineFile> onlineFiles = getOnlineFilesList();
 
+        // Listing the online zip files
+        ArrayList<ZipFile> zipFiles = getZipFilesList();
+
         // Getting the files to download
         ArrayList<FileToUpdate> filesToUpdate = null;
         try {
-            filesToUpdate = getFilesToUpdate(onlineFiles);
+            filesToUpdate = getFilesToUpdate(onlineFiles, zipFiles);
         } catch (NoSuchAlgorithmException e) {
         }
 
@@ -122,7 +127,8 @@ public class SUpdate {
                 // Removing it
                 if (!ftu.getFile().delete())
                     ftu.getFile().deleteOnExit();
-            }
+            } else if (ftu.getAction() == FileToUpdate.DOWNLOAD_AND_UNZIP)
+                downloader.downloadAndUnzip(new URL(baseURL + (baseURL.endsWith("/") ? "" : "/") + "zips" + ftu.getFile().getAbsolutePath().replace(outputFolder.getAbsolutePath(), "").replace("\\", "/")), ftu.getFile());
 
         // Closing the pool
         downloader.getPool().shutdown();
@@ -141,6 +147,12 @@ public class SUpdate {
             // Printing a message
             System.out.println("[S-Update] Can't wait for the pool !");
         }
+
+        // Printing a message
+        System.out.println("[S-Update] Deleting empty folders");
+
+        // Deleting empty folders
+        Util.deleteEmptyFolders(this.outputFolder);
 	}
 
     /**
@@ -157,12 +169,13 @@ public class SUpdate {
         // Creating an array list of OnlineFile
         ArrayList<OnlineFile> onlineFiles = new ArrayList<OnlineFile>();
 
-        // Sending the request
+        // Sending the index
         BufferedReader br = Server.getFile(this, "su_files.idx");
 
+        // Printing a message
         System.out.println("[S-Update] Parsing the index");
 
-        // Reading the request
+        // Reading the file
         while(br.ready()) {
             // Getting the read line
             String line = br.readLine();
@@ -186,6 +199,39 @@ public class SUpdate {
         return onlineFiles;
     }
 
+    public ArrayList<ZipFile> getZipFilesList() throws IOException {
+        // Printing a message
+        System.out.println("[S-Update] Downloading the zip files index");
+
+        // Creating an array list of ZipFile
+        ArrayList<ZipFile> zipFiles = new ArrayList<ZipFile>();
+
+        // Getting the index
+        BufferedReader br = Server.getFile(this, "su_zips.idx");
+
+        // Printing a message
+        System.out.println("[S-Update] Parsing the zip index");
+
+        // Reading the file
+        while(br.ready()) {
+            // Getting the read line
+            String line = br.readLine();
+
+            // Splitting the line in two parts separated by a '|'
+            String[] infos = line.split("\\|");
+
+            // Adding a new ZipFile object with the first part as the zip name
+            // and the second part as a file of the zip that will be checked
+            // to know if we need to download the zip
+            zipFiles.add(new ZipFile(infos[0], infos[1]));
+        }
+
+        // Closing the reader
+        br.close();
+
+        return zipFiles;
+    }
+
     /**
      * Returns a list of the files to download / remove
      *
@@ -193,9 +239,36 @@ public class SUpdate {
      *            If it failed to get the files to ignore
      * @return A list of files to update
      */
-    private ArrayList<FileToUpdate> getFilesToUpdate(ArrayList<OnlineFile> onlineFiles) throws IOException, NoSuchAlgorithmException {
+    private ArrayList<FileToUpdate> getFilesToUpdate(ArrayList<OnlineFile> onlineFiles, ArrayList<ZipFile> zipFiles) throws IOException, NoSuchAlgorithmException {
         // Initializing an empty array list
         ArrayList<FileToUpdate> filesToUpdate = new ArrayList<FileToUpdate>();
+
+        // Creating the FileIgnorer
+        FileIgnorer fileIgnorer = new FileIgnorer(this);
+
+        // Printing a message
+        System.out.println("[S-Update] Getting the files to ignore");
+
+        // Getting the files to ignore
+        fileIgnorer.getFilesToIgnore();
+
+        // For each zip file
+        for(ZipFile zipFile : zipFiles) {
+            // Getting any of the zip file
+            File anyFile = new File(this.outputFolder, zipFile.getAnyFile());
+
+            // If the file doesn't exist
+            if(!anyFile.exists()) {
+                // Adding it to the list as a file to download and unzip
+                filesToUpdate.add(new FileToUpdate(this, zipFile));
+
+                // Adding one to the numberOfFilesToDownload
+                numberOfFilesToDownload++;
+            }
+
+            // Adding the parent folder to the list of files to ignore
+            fileIgnorer.addFileToIgnore(anyFile.getParentFile());
+        }
 
         // Printing a message
         System.out.println("[S-Update] Checking files");
@@ -213,20 +286,8 @@ public class SUpdate {
 
                 // Adding one to numberOfFilesToDownload
                 numberOfFilesToDownload++;
-
-                // Restarting the loop
-                continue;
             }
         }
-
-        // Creating the FileIgnorer
-        FileIgnorer fileIgnorer = new FileIgnorer(this);
-
-        // Printing a message
-        System.out.println("[S-Update] Getting the files to ignore");
-
-        // Getting the files to ignore
-        fileIgnorer.getFilesToIgnore();
 
         // Printing a message
         System.out.println("[S-Update] Checking for local files to delete");
@@ -305,6 +366,11 @@ public class SUpdate {
      */
     public int getNumberOfFilesToRemove() {
         return numberOfFilesToRemove;
+    }
+
+    public static void main(String[] args) throws IOException {
+        SUpdate su = new SUpdate("http://localhost/sutesttest/", new File("C:/Users/Adrien/Documents/LEGROSTESTDEOUF"));
+        su.update();
     }
 
 }

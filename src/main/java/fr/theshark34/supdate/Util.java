@@ -18,13 +18,12 @@
  */
 package fr.theshark34.supdate;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
 
 /**
  * An Util class
@@ -33,7 +32,7 @@ import java.util.ArrayList;
  *     A Class containing some usefull methods
  * </p>
  *
- * @version 2.1-SNAPSHOT
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class Util {
@@ -116,6 +115,99 @@ public class Util {
             md5 += Integer.toString( ( bytes[i] & 0xff ) + 0x100, 16).substring( 1 );
 
         return md5;
+    }
+
+    /**
+     * Unzip a file in its parent directory
+     *
+     * @param zip
+     *            The file to unzip
+     */
+    public static void unzip(File zip) throws IOException {
+        // Getting the zip file
+        java.util.zip.ZipFile zipFile = new java.util.zip.ZipFile(zip);
+
+        // Getting an enumeration of all its entries
+        Enumeration<?> enu = zipFile.entries();
+
+        // For each entries in the list
+        while (enu.hasMoreElements()) {
+            // Getting the entry
+            ZipEntry zipEntry = (ZipEntry) enu.nextElement();
+
+            // Getting its name
+            String name = zipEntry.getName();
+
+            // Getting the output file
+            File file = new File(zip.getParentFile(), name);
+
+            // If the name ends with '/'
+            if (name.endsWith("/")) {
+                // It means that is a directory so creating it
+                file.mkdirs();
+
+                // And restarting the loop
+                continue;
+            }
+
+            // Getting its parent directory
+            File parent = file.getParentFile();
+
+            // If it exists
+            if (parent != null)
+                // Creating it
+                parent.mkdirs();
+
+            // Getting an input stream for this entry
+            InputStream is = zipFile.getInputStream(zipEntry);
+
+            // Creating an output stream for the file
+            FileOutputStream fos = new FileOutputStream(file);
+
+            // Creating a byte buffer
+            byte[] bytes = new byte[1024];
+
+            // Initializing the length int
+            int length;
+
+            // While the buffer length isn't negative
+            while ((length = is.read(bytes)) >= 0)
+                // Writing the buffer
+                fos.write(bytes, 0, length);
+
+            // Closing the input stream
+            is.close();
+
+            // Closing the output stream
+            fos.close();
+        }
+
+        // Closing the zip file
+        zipFile.close();
+    }
+
+    /**
+     * Deletes all the empty folder
+     *
+     * @param folder
+     *            The folder to delete the empty folders
+     */
+    public static void deleteEmptyFolders(File folder) {
+        // Getting the list of the files
+        File[] files = folder.listFiles();
+
+        // For each file in the list
+        for (File f : files)
+            // If its a directory
+            if (f.isDirectory()) {
+                // Deleting his empty folder
+                deleteEmptyFolders(f);
+
+                // Then if the directory is now empty
+                if (f.listFiles().length == 0)
+                    // Deleting it
+                    f.delete();
+            }
     }
 
 }

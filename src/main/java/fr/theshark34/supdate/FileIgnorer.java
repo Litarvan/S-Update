@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *     deleting the useless files.
  * </p>
  *
- * @version 2.1-SNAPSHOT
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class FileIgnorer {
@@ -99,6 +99,20 @@ public class FileIgnorer {
                 // Returning true
                 return true;
         return false;
+    }
+
+    /**
+     * Adds a file to the ignore list
+     *
+     * @param f
+     *            The file to add
+     */
+    public void addFileToIgnore(File f) {
+        // Generating the file relative path
+        String filePath = f.getAbsolutePath().replace(su.getOutputFolder().getAbsolutePath(), "").replace("\\", "/").replaceFirst("/", "");
+
+        // Adding it to the list
+        filesToIgnore.add(filePath);
     }
 
 }

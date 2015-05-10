@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
  *     Multi Threaded downloader
  * </p>
  *
- * @version 2.1-SNAPSHOT
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class Downloader {
@@ -62,6 +62,18 @@ public class Downloader {
      */
     public void download(URL url, File file, long lastModified) {
         pool.execute(new DownloadTask(url, file, lastModified));
+    }
+
+    /**
+     * Adds a download and unzip task to the executor service
+     *
+     * @param url
+     *            The URL of the file to download
+     * @param file
+     *            The file destination
+     */
+    public void downloadAndUnzip(URL url, File file) {
+        pool.execute(new DownloadAndUnzipTask(url, file));
     }
 
     public static void downloadFile(URL url, File file) throws IOException {

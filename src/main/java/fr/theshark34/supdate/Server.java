@@ -29,7 +29,7 @@ import java.net.URL;
  *     Contains a method to send a request to the server
  * </p>
  *
- * @version 2.0-SNAPSHOT
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class Server {

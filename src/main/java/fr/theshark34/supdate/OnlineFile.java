@@ -25,7 +25,7 @@ package fr.theshark34.supdate;
  *     A Class to stock the informations of an online file given by the Server
  * </p>
  *
- * @version 2.1-SNAPSHOT
+ * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
 public class OnlineFile {

@@ -26,28 +26,23 @@ import java.net.URL;
  * The Download Task
  *
  * <p>
- *     A Task that download a file
+ *     A Task that download and unzip a zip file
  * </p>
  *
  * @version 2.2.0-SNAPSHOT
  * @author TheShark34
  */
-public class DownloadTask implements Runnable {
+public class DownloadAndUnzipTask implements Runnable {
 
     /**
      * The URL of the file
      */
-	private URL url;
+    private URL url;
 
     /**
      * The file destination
      */
-	private File output;
-
-    /**
-     * The last modified date to set after downloaded the file
-     */
-    private long lastModified;
+    private File output;
 
     /**
      * Basic constructor
@@ -56,35 +51,42 @@ public class DownloadTask implements Runnable {
      *            The URL of the file
      * @param output
      *            The file destination
-     * @param lastModified
-     *            The last modified date to set after downloaded the file
      */
-	public DownloadTask(URL url, File output, long lastModified) {
-		this.url = url;
-		this.output = output;
-        this.lastModified = lastModified;
-	}
+    public DownloadAndUnzipTask(URL url, File output) {
+        this.url = url;
+        this.output = output;
+    }
 
-	@Override
-	public void run() {
+    @Override
+    public void run() {
         // Printing a message
-		System.out.println("[S-Update] Downloading file " + url);
+        System.out.println("[S-Update] Downloading file " + url);
 
         // Downloading the file
-		try {
-			Downloader.downloadFile(url, output);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
+        try {
+            Downloader.downloadFile(url, output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             // Printing a finished message
-			System.out
-					.println("[S-Update] Finished to download file "
-							+ url);
+            System.out
+                    .println("[S-Update] Finished to download file "
+                            + url);
 
-            // Setting the last modified date if it is not 0
-            if(lastModified != 0)
-                output.setLastModified(lastModified);
-		}
-	}
+            // Printing a unzipping message
+            System.out.println("[S-Update] Unzipping file " + output.getAbsolutePath());
+
+            // Unzipping the file
+            try {
+                Util.unzip(output);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Deleting the zip
+            if(!output.delete())
+                output.deleteOnExit();
+        }
+    }
 
 }
