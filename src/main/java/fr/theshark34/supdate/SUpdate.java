@@ -86,7 +86,7 @@ public class SUpdate {
     /**
      * The current file manager
      */
-    private FileManager fileManager = new FileManager(applicationManager);
+    private FileManager fileManager = new FileManager(this);
 
     /**
      * The main S-Update constructor, create a basic S-Update object
@@ -99,6 +99,14 @@ public class SUpdate {
     public SUpdate(String serverUrl, File outputFolder) {
         this.serverUrl = serverUrl;
         this.outputFolder = outputFolder;
+    }
+
+    /**
+     * Starts the update ! Create the Updater, call the applications
+     * events, and start the Updater !
+     */
+    public void start() {
+
     }
 
     /**
@@ -142,13 +150,23 @@ public class SUpdate {
     }
 
     /**
-     * Add an application to S-Update
+     * Add an application to S-Update (same as getApplicationManager()
+     * .addApplication
      *
      * @param application
      *            The application to add
      */
     public void addApplication(Application application) {
-        applicationManager.addApplication(application);
+        applicationManager.addApplication(this, application);
+    }
+
+    /**
+     * Returns the current Application Manager
+     *
+     * @return The application manager
+     */
+    public ApplicationManager getApplicationManager() {
+        return this.applicationManager;
     }
 
 }

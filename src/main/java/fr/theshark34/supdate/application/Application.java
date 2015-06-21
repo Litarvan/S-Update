@@ -1,6 +1,27 @@
+/*
+ * Copyright 2015 TheShark34
+ *
+ * This file is part of S-Update.
+
+ * S-Update is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * S-Update is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.theshark34.supdate.application;
 
-import java.io.File;
+import fr.theshark34.supdate.application.event.ApplicationEvent;
+import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
+import fr.theshark34.supdate.application.event.FileCheckingEvent;
+import fr.theshark34.supdate.application.event.FileDownloadingEvent;
 
 /**
  * The Application class
@@ -26,12 +47,12 @@ public abstract class Application {
     /**
      * Called when the application is added to the list
      */
-    public abstract void onInit();
+    public abstract void onInit(ApplicationEvent event);
 
     /**
      * Called when the update is starting
      */
-    public abstract void onStart();
+    public abstract void onStart(ApplicationEvent event);
 
     /**
      * Called when a file is being checked
@@ -42,7 +63,7 @@ public abstract class Application {
      *            The result that the checker gave
      * @return The new check result
      */
-    public abstract boolean onFileChecking(File file, boolean checkResult);
+    public abstract boolean onFileChecking(FileCheckingEvent event);
 
     /**
      * When a file action is executed
@@ -50,7 +71,7 @@ public abstract class Application {
      * @param args
      *            The args given by the action
      */
-    public abstract void onFileAction(Object... args);
+    public abstract void onFileAction(FileActionEvent event);
 
     /**
      * Called in loop when a file is being download
@@ -60,11 +81,11 @@ public abstract class Application {
      * @param destFile
      *            The destination file
      */
-    public abstract void whileDownloading(File downloadingFile, File destFile, long downloaded, long toDownload);
+    public abstract void whileDownloading(FileDownloadingEvent event);
 
     /**
      * Called when the update is finished
      */
-    public abstract void onUpdateEnd();
+    public abstract void onUpdateEnd(ApplicationEvent event);
 
 }

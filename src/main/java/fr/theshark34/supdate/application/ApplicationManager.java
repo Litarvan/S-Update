@@ -1,4 +1,25 @@
+/*
+ * Copyright 2015 TheShark34
+ *
+ * This file is part of S-Update.
+
+ * S-Update is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * S-Update is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.theshark34.supdate.application;
+
+import fr.theshark34.supdate.SUpdate;
+import fr.theshark34.supdate.application.event.ApplicationEvent;
 
 import java.util.ArrayList;
 
@@ -26,12 +47,12 @@ public class ApplicationManager {
      * @param application
      *            The application to add
      */
-    public void addApplication(Application application) {
+    public void addApplication(SUpdate sUpdate, Application application) {
         // Adding the application to the list
         applications.add(application);
 
         // Then sending the onInit event
-        application.onInit();
+        application.onInit(new ApplicationEvent(sUpdate));
     }
 
     /**

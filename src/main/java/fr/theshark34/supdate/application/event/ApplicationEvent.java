@@ -16,23 +16,48 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.files;
+package fr.theshark34.supdate.application.event;
+
+import fr.theshark34.supdate.SUpdate;
 
 /**
- * The FileAction
+ * The Application Event
  *
  * <p>
- *     The FileAction are actions that the FileManager class can do
- *     to files, downloading, renaming, or deleting.
+ *     This is an event for the application, given to give
+ *     some informations to the Application when an event
+ *     is called.
  * </p>
+ *
+ * This class is the parent class for all the event
  *
  * @version 3.0.0-SNAPSHOT
  * @author TheShark34
  */
-public enum FileAction {
+public class ApplicationEvent {
 
-    DOWNLOAD,
-    RENAME,
-    DELETE
+    /**
+     * The current SUpdate instance
+     */
+    private SUpdate sUpdate;
+
+    /**
+     * The Application Event
+     *
+     * @param sUpdate
+     *            The current SUpdate instance
+     */
+    public ApplicationEvent(SUpdate sUpdate) {
+        this.sUpdate = sUpdate;
+    }
+
+    /**
+     * Return the current SUpdate instance
+     *
+     * @return The SUpdate instance
+     */
+    public SUpdate getSUpdate() {
+        return this.sUpdate;
+    }
 
 }
