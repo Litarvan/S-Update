@@ -26,7 +26,7 @@ package fr.theshark34.supdate.files;
  *     to files, downloading, renaming, or deleting.
  * </p>
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public enum FileAction {

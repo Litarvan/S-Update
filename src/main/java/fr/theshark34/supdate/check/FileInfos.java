@@ -16,48 +16,43 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.check;
 
 /**
- * The Application Event
+ * The FileInfos
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    Contains the infos about a file, specific for each
+ *    check method.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class FileInfos {
 
     /**
-     * The current SUpdate instance
+     * The relative path of the file
      */
-    private SUpdate sUpdate;
+    private String fileRelativePath;
 
     /**
-     * The Application Event
+     * The FileInfos
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param fileRelativePath
+     *            The relative path of the file
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
+    public FileInfos(String fileRelativePath) {
+        this.fileRelativePath = fileRelativePath;
     }
 
     /**
-     * Return the current SUpdate instance
+     * Return the relative path of the file
      *
-     * @return The SUpdate instance
+     * @return The file relative path
      */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public String getFileRelativePath() {
+        return this.fileRelativePath;
     }
 
 }

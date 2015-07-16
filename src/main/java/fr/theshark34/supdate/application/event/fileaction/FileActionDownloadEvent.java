@@ -33,7 +33,7 @@ import java.net.URL;
  *     method in the applications.
  * </p>
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public class FileActionDownloadEvent extends FileActionEvent {

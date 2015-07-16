@@ -29,6 +29,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The FileManager
@@ -40,7 +41,7 @@ import java.util.concurrent.Executors;
  *     onFileAction event of the applications.
  * </p>
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public class FileManager {
@@ -58,8 +59,8 @@ public class FileManager {
     /**
      * Simple constructor
      *
-     * @param applicationManager
-     *            The current application manager
+     * @param sUpdate
+     *            The current SUpdate object
      */
     public FileManager(SUpdate sUpdate) {
         this.sUpdate = sUpdate;
@@ -150,6 +151,18 @@ public class FileManager {
         // Then sending a onFileAction event to all the applications
         for(Application app : sUpdate.getApplicationManager().getApplications())
             app.onFileAction(new FileActionEvent(sUpdate, FileAction.DELETE, file));
+    }
+
+    /**
+     * Stops the download pool and wait for its end
+     */
+    public void stop() {
+        pool.shutdown();
+
+        try {
+            pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+        } catch (InterruptedException e) {
+        }
     }
 
 }

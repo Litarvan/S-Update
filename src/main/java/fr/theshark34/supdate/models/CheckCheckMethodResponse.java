@@ -16,48 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.models;
 
 /**
- * The Application Event
+ * The CheckCheckMethod Response
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    This is the model of the 'Check Check Method' request response.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class CheckCheckMethodResponse {
 
     /**
-     * The current SUpdate instance
+     * If the check method is present on the server
      */
-    private SUpdate sUpdate;
+    private boolean methodPresent;
 
     /**
-     * The Application Event
+     * The CheckCheckMethod Response
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param methodPresent
+     *            If the check method is present on the server
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
+    public CheckCheckMethodResponse(boolean methodPresent) {
+        this.methodPresent = methodPresent;
     }
 
     /**
-     * Return the current SUpdate instance
+     * Return if the check method is present on the server
      *
-     * @return The SUpdate instance
+     * @return If the check method is on the server
      */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public boolean isMethodPresent() {
+        return methodPresent;
     }
 
 }

@@ -20,6 +20,18 @@ package fr.theshark34.supdate.application.event;
 
 import fr.theshark34.supdate.SUpdate;
 
+/**
+ * The FileChecking Event
+ *
+ * <p>
+ *     This event is given in the onFileCheck application event
+ *     to give some informations about the checking file, and
+ *     things like this.
+ * </p>
+ *
+ * @version 3.0.0-BETA
+ * @author TheShark34
+ */
 public class FileCheckingEvent extends ApplicationEvent {
 
     /**

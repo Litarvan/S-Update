@@ -31,7 +31,7 @@ import java.util.ArrayList;
  *     are registered. It call their events, and things like this.
  * </p>
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public class ApplicationManager {
@@ -39,7 +39,7 @@ public class ApplicationManager {
     /**
      * The list of all the loaded applications
      */
-    private ArrayList<Application> applications;
+    private ArrayList<Application> applications = new ArrayList<Application>();
 
     /**
      * Load, then add an application

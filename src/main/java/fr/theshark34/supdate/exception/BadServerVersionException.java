@@ -16,48 +16,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.exception;
 
 /**
- * The Application Event
+ * The BadServerVersion Exception
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *     This exception is thrown when the server version is not
+ *     the required version, or the server revision are not the required.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class BadServerVersionException extends Exception {
 
     /**
-     * The current SUpdate instance
-     */
-    private SUpdate sUpdate;
-
-    /**
-     * The Application Event
+     * The BadServerVersion Exception
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param serverVersion
+     *            The server version / revision
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
-    }
-
-    /**
-     * Return the current SUpdate instance
-     *
-     * @return The SUpdate instance
-     */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public BadServerVersionException(String minVersion, String serverVersion, boolean revisionError) {
+        super(revisionError ?
+                "Bad server revision, server revision need to be " + minVersion + " but is " + serverVersion :
+                "Bad server version, need to be at least " + minVersion + " but is " + serverVersion);
     }
 
 }

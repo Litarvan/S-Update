@@ -16,48 +16,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.exception;
 
 /**
- * The Application Event
+ * The ServerMissingSomething Exception
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    This exception is thrown when the server is missing a
+ *    check method, an application, or something like this.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class ServerMissingSomethingException extends Exception {
 
     /**
-     * The current SUpdate instance
-     */
-    private SUpdate sUpdate;
-
-    /**
-     * The Application Event
+     * The ServerMissingSomething Exception
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param missingThing
+     *            What's missing
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
-    }
-
-    /**
-     * Return the current SUpdate instance
-     *
-     * @return The SUpdate instance
-     */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public ServerMissingSomethingException(String missingThing) {
+        super("Server need to have " + missingThing);
     }
 
 }

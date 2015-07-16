@@ -16,48 +16,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
+package fr.theshark34.supdate.check.md5;
 
-import fr.theshark34.supdate.SUpdate;
+import fr.theshark34.supdate.check.FileInfos;
 
 /**
- * The Application Event
+ * The MD5 FileInfos
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    This is the file info for the MD5 Check Method, containing
+ *    the infos about a file, its name and its MD5.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class MD5FileInfos extends FileInfos {
 
     /**
-     * The current SUpdate instance
+     * The file MD5
      */
-    private SUpdate sUpdate;
+    private String md5;
 
     /**
-     * The Application Event
+     * The MD5 FileInfos
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param fileRelativePath
+     *            The relative path of the file
+     * @param md5
+     *            The file MD5
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
+    public MD5FileInfos(String fileRelativePath, String md5) {
+        super(fileRelativePath);
+
+        this.md5 = md5;
     }
 
     /**
-     * Return the current SUpdate instance
+     * Return the file MD5
      *
-     * @return The SUpdate instance
+     * @return The file MD5
      */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public String getMD5() {
+        return this.md5;
     }
 
 }

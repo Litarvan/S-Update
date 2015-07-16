@@ -21,7 +21,6 @@ package fr.theshark34.supdate.application;
 import fr.theshark34.supdate.application.event.ApplicationEvent;
 import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 import fr.theshark34.supdate.application.event.FileCheckingEvent;
-import fr.theshark34.supdate.application.event.FileDownloadingEvent;
 
 /**
  * The Application class
@@ -32,7 +31,7 @@ import fr.theshark34.supdate.application.event.FileDownloadingEvent;
  *     informations, to modify everything you want.
  * </p>
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public abstract class Application {
@@ -43,6 +42,13 @@ public abstract class Application {
      * @return The application name
      */
     public abstract String getName();
+
+    /**
+     * Returns if the application need to be on the server
+     *
+     * @return If the application need to be on the server
+     */
+    public abstract boolean isServerRequired();
 
     /**
      * Called when the application is added to the list
@@ -72,16 +78,6 @@ public abstract class Application {
      *            The args given by the action
      */
     public abstract void onFileAction(FileActionEvent event);
-
-    /**
-     * Called in loop when a file is being download
-     *
-     * @param downloadingFile
-     *            The file being download
-     * @param destFile
-     *            The destination file
-     */
-    public abstract void whileDownloading(FileDownloadingEvent event);
 
     /**
      * Called when the update is finished

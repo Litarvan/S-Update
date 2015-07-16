@@ -18,9 +18,9 @@
  */
 package fr.theshark34.supdate.files;
 
+import fr.theshark34.supdate.BarAPI;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
@@ -31,7 +31,7 @@ import java.nio.channels.ReadableByteChannel;
  *     A Task that downloads a file to a destination.
  * </p>
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public class DownloadTask implements Runnable {
@@ -72,9 +72,7 @@ public class DownloadTask implements Runnable {
             HttpURLConnection connection = (HttpURLConnection) fileUrl.openConnection();
 
             // Adding some user agents
-            connection.addRequestProperty("User-Agent", "Mozilla/5.0");
-            connection.addRequestProperty("User-Agent", "AppleWebKit/537.36 (KHTML, like Gecko)");
-            connection.addRequestProperty("User-Agent", "Chrome/43.0.2357.124 Safari/537.36");
+            connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
 
             // Creating the byte channel
             ReadableByteChannel rbc = Channels.newChannel(connection
@@ -83,12 +81,22 @@ public class DownloadTask implements Runnable {
             // Creating the output stream
             FileOutputStream fos = new FileOutputStream(dest);
 
+            // Starting a BarAPI Thread to check the file size
+            Thread t = BarAPI.startFileSizeThread(dest, connection.getContentLengthLong());
+            t.start();
+
             // Transfering the both channels
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
             // Closing them
             fos.close();
             rbc.close();
+
+            // Stopping the BarAPI Thread
+            t.interrupt();
+
+            // Incrementing the BarAPI 'numberOfDownloadedFiles' variable
+            BarAPI.setNumberOfDownloadedFiles(BarAPI.getNumberOfDownloadedFiles());
         } catch (IOException e) {
             // If it failed printing a warning message
             System.out.println("[S-Update] WARNING : File " + fileUrl + " wasn't downloaded : " + e);

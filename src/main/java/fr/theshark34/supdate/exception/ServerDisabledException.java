@@ -16,48 +16,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.exception;
 
 /**
- * The Application Event
+ * The ServerDisabledException Exception
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    This exception is thrown when the server is disabled.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class ServerDisabledException extends Exception {
 
     /**
-     * The current SUpdate instance
+     * The ServerDisabledException Exception
      */
-    private SUpdate sUpdate;
-
-    /**
-     * The Application Event
-     *
-     * @param sUpdate
-     *            The current SUpdate instance
-     */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
-    }
-
-    /**
-     * Return the current SUpdate instance
-     *
-     * @return The SUpdate instance
-     */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public ServerDisabledException() {
+        super("The server is disabled");
     }
 
 }

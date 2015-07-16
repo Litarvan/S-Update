@@ -16,48 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.models;
 
 /**
- * The Application Event
+ * The CheckApplication Response
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    This is the model of the 'Check Application' request response.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class CheckApplicationResponse {
 
     /**
-     * The current SUpdate instance
+     * If the application is present on the server
      */
-    private SUpdate sUpdate;
+    private boolean applicationPresent;
 
     /**
-     * The Application Event
+     * The CheckApplication Response
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param applicationPresent
+     *            If the application is present on the server
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
+    public CheckApplicationResponse(boolean applicationPresent) {
+        this.applicationPresent = applicationPresent;
     }
 
     /**
-     * Return the current SUpdate instance
+     * Return if the application is present on the server
      *
-     * @return The SUpdate instance
+     * @return If the application is on the server
      */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public boolean isApplicationPresent() {
+        return applicationPresent;
     }
 
 }

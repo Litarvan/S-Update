@@ -16,48 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
-
-import fr.theshark34.supdate.SUpdate;
+package fr.theshark34.supdate.models;
 
 /**
- * The Application Event
+ * The Version Response
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *    This is the model of the 'version' request response.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class VersionResponse {
 
     /**
-     * The current SUpdate instance
+     * The received version
      */
-    private SUpdate sUpdate;
+    private String version;
 
     /**
-     * The Application Event
+     * The VersionResponse
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param version
+     *            The received version
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
+    public VersionResponse(String version) {
+        this.version = version;
     }
 
     /**
-     * Return the current SUpdate instance
+     * Return the received version
      *
-     * @return The SUpdate instance
+     * @return The received version
      */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public String getVersion() {
+        return version;
     }
 
 }

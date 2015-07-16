@@ -16,48 +16,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application.event;
+package fr.theshark34.supdate.exception;
 
-import fr.theshark34.supdate.SUpdate;
+import java.io.File;
+import java.io.IOException;
 
 /**
- * The Application Event
+ * The UnableToCheck Exception
  *
  * <p>
- *     This is an event for the application, given to give
- *     some informations to the Application when an event
- *     is called.
+ *     This exception is thrown by the checkFile method of
+ *     the CheckMethods when an exception was throwed while
+ *     checking a file.
  * </p>
- *
- * This class is the parent class for all the event
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class ApplicationEvent {
+public class UnableToCheckException extends Exception {
 
     /**
-     * The current SUpdate instance
-     */
-    private SUpdate sUpdate;
-
-    /**
-     * The Application Event
+     * The UnableToCheck Exception
      *
-     * @param sUpdate
-     *            The current SUpdate instance
+     * @param file
+     *            The file that generated the error
+     * @param throwedException
+     *            The thrown Exception
      */
-    public ApplicationEvent(SUpdate sUpdate) {
-        this.sUpdate = sUpdate;
-    }
-
-    /**
-     * Return the current SUpdate instance
-     *
-     * @return The SUpdate instance
-     */
-    public SUpdate getSUpdate() {
-        return this.sUpdate;
+    public UnableToCheckException(File file, Exception throwedException) {
+        super("Can't check the file " + file.getName() + " Exception thrown : " + throwedException);
     }
 
 }

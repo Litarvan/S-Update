@@ -35,7 +35,7 @@ import java.io.File;
  *
  * This class is mostly a parent class for each Action event
  *
- * @version 3.0.0-SNAPSHOT
+ * @version 3.0.0-BETA
  * @author TheShark34
  */
 public class FileActionEvent extends ApplicationEvent {
