@@ -18,7 +18,9 @@
  */
 package fr.theshark34.supdate;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * The BarAPI
@@ -53,6 +55,16 @@ public class BarAPI {
      * The number of file to download
      */
     private static int numberOfFileToDownload;
+
+    /**
+     * Sets the number of total downloaded bytes
+     *
+     * @param numberOfTotalDownloadedBytes
+     *            The new number of total downloaded bytes
+     */
+    public static void setNumberOfTotalDownloadedBytes(long numberOfTotalDownloadedBytes) {
+        BarAPI.numberOfTotalDownloadedBytes = numberOfTotalDownloadedBytes;
+    }
 
     /**
      * Sets the number of total bytes to download
@@ -118,27 +130,6 @@ public class BarAPI {
      */
     public static int getNumberOfFileToDownload() {
         return numberOfFileToDownload;
-    }
-
-    /**
-     * Start a thread that will check the given file size to update
-     * the numberOfTotalDownloadedBytes variable
-     *
-     * @param file
-     *            The file to check
-     */
-    public static Thread startFileSizeThread(final File file, final long fileTotalSize) {
-        return new Thread() {
-            private long oldSize = 0;
-
-            @Override
-            public void run() {
-                while(!this.isInterrupted()) {
-                    numberOfTotalDownloadedBytes = numberOfTotalDownloadedBytes - oldSize + file.length();
-                    oldSize = file.length();
-                }
-            }
-        };
     }
 
 }

@@ -74,26 +74,25 @@ public class DownloadTask implements Runnable {
             // Adding some user agents
             connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
 
-            // Creating the byte channel
-            ReadableByteChannel rbc = Channels.newChannel(connection
-                    .getInputStream());
+            // Creating the data input stream
+            DataInputStream dis = new DataInputStream(connection.getInputStream());
 
-            // Creating the output stream
+            // Transfering
+            byte[] fileData = new byte[connection.getContentLength()];
+            for (int x = 0; x < fileData.length; x++)  {
+                fileData[x] = dis.readByte();
+                BarAPI.setNumberOfTotalDownloadedBytes(BarAPI.getNumberOfTotalDownloadedBytes() + 1);
+            }
+
+            // Closing the input stream
+            dis.close();
+
+            // Writing the file
             FileOutputStream fos = new FileOutputStream(dest);
+            fos.write(fileData);
 
-            // Starting a BarAPI Thread to check the file size
-            Thread t = BarAPI.startFileSizeThread(dest, connection.getContentLengthLong());
-            t.start();
-
-            // Transfering the both channels
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-
-            // Closing them
+            // Closing the output stream
             fos.close();
-            rbc.close();
-
-            // Stopping the BarAPI Thread
-            t.interrupt();
 
             // Incrementing the BarAPI 'numberOfDownloadedFiles' variable
             BarAPI.setNumberOfDownloadedFiles(BarAPI.getNumberOfDownloadedFiles());

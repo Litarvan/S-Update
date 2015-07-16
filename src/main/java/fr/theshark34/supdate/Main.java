@@ -25,6 +25,7 @@ public class Main {
 
         final JProgressBar bar = new JProgressBar();
         bar.setBorder(null);
+        bar.setMaximum(100);
         bar.setBackground(Color.LIGHT_GRAY);
         bar.setForeground(Color.GRAY);
         bar.setBounds(5, 5, 340, 20);
@@ -39,10 +40,9 @@ public class Main {
             @Override
             public void run() {
                 while(!this.isInterrupted()) {
-                    bar.setValue((int) (BarAPI.getNumberOfTotalDownloadedBytes() / 1000D));
-                    bar.setMaximum((int) (BarAPI.getNumberOfTotalBytesToDownload() / 1000D));
-
-                    System.out.println(BarAPI.getNumberOfTotalDownloadedBytes() + " / " + BarAPI.getNumberOfTotalBytesToDownload());
+                    int percent = (int) ((double) BarAPI.getNumberOfTotalDownloadedBytes() / (double) BarAPI.getNumberOfTotalBytesToDownload() * 100D);
+                    bar.setValue(percent);
+                    System.out.println(percent);
                 }
             }
         };
