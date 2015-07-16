@@ -39,7 +39,10 @@ import java.net.CookiePolicy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The Updater object
@@ -118,7 +121,7 @@ public class Updater {
         List<FileInfos> fileList = createFileList();
 
         // Creating the list of files to download
-        ArrayList<String> filesToDownload = new ArrayList<String>();
+        Map<URL, File> filesToDownload = new HashMap<>();
 
         System.out.println("[S-Update] Checking them");
 
@@ -142,9 +145,14 @@ public class Updater {
                 checkResult = app.onFileChecking(new FileCheckingEvent(sUpdate, fileInfos.getFileRelativePath(), checkResult));
 
             // If we need to download the file
-            if (checkResult)
-                // Adding their file relative path to the download list
-                filesToDownload.add(fileInfos.getFileRelativePath());
+            if (checkResult) {
+                // Getting its infos
+                URL fileURL = new URL((sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + FILES_FOLDER + fileInfos.getFileRelativePath()).replaceAll(" ", "%20"));
+                File localFile = new File(sUpdate.getOutputFolder(), fileInfos.getFileRelativePath());
+
+                // Adding them to the filesToDownload map
+                filesToDownload.put(fileURL, localFile);
+            }
         }
 
         // Setting the BarAPI 'numberOfFileToDownload' variable to the size of the filesToDownload list
@@ -158,16 +166,13 @@ public class Updater {
         CookieManager cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
+        // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
+        for(Entry<URL, File> entry : filesToDownload.entrySet())
+            BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLengthLong());
+
         // Downloading the files
-        for(String file : filesToDownload) {
-            URL fileURL = new URL((sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + FILES_FOLDER + file).replaceAll(" ", "%20"));
-            File localFile = new File(sUpdate.getOutputFolder(), file);
-
-            // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-            BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + fileURL.openConnection().getContentLengthLong());
-
-            sUpdate.getFileManager().download(fileURL, localFile);
-        }
+        for(Entry<URL, File> entry : filesToDownload.entrySet())
+            sUpdate.getFileManager().download(entry.getKey(), entry.getValue());
 
         // Terminating
         sUpdate.getFileManager().stop();
