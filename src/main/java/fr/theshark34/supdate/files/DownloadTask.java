@@ -79,9 +79,10 @@ public class DownloadTask implements Runnable {
 
             // Transfering
             byte[] fileData = new byte[connection.getContentLength()];
-            for (int x = 0; x < fileData.length; x++)  {
-                fileData[x] = dis.readByte();
+            int x;
+            for (x = 0; x < fileData.length; x++)  {
                 BarAPI.setNumberOfTotalDownloadedBytes(BarAPI.getNumberOfTotalDownloadedBytes() + 1);
+                fileData[x] = dis.readByte();
             }
 
             // Closing the input stream

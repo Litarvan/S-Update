@@ -39,22 +39,22 @@ public class BarAPI {
     /**
      * The download bytes for the current session
      */
-    private static long numberOfTotalDownloadedBytes;
+    private static long numberOfTotalDownloadedBytes = 0;
 
     /**
      * The number of bytes to download for the current session
      */
-    private static long numberOfTotalBytesToDownload;
+    private static long numberOfTotalBytesToDownload = 0;
 
     /**
      * The number of downloaded file
      */
-    private static int numberOfDownloadedFiles;
+    private static int numberOfDownloadedFiles = 0;
 
     /**
      * The number of file to download
      */
-    private static int numberOfFileToDownload;
+    private static int numberOfFileToDownload = 0;
 
     /**
      * Sets the number of total downloaded bytes

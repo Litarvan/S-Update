@@ -6,6 +6,7 @@ import fr.theshark34.supdate.exception.BadServerVersionException;
 import fr.theshark34.supdate.exception.ServerDisabledException;
 import fr.theshark34.supdate.exception.ServerMissingSomethingException;
 
+import fr.theshark34.supdate.files.DownloadTask;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,6 @@ public class Main {
                 while(!this.isInterrupted()) {
                     int percent = (int) ((double) BarAPI.getNumberOfTotalDownloadedBytes() / (double) BarAPI.getNumberOfTotalBytesToDownload() * 100D);
                     bar.setValue(percent);
-                    System.out.println(percent);
                 }
             }
         };
