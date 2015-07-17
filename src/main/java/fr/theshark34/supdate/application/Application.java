@@ -19,8 +19,8 @@
 package fr.theshark34.supdate.application;
 
 import fr.theshark34.supdate.application.event.ApplicationEvent;
-import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 import fr.theshark34.supdate.application.event.FileCheckingEvent;
+import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 
 /**
  * The Application class

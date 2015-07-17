@@ -18,9 +18,9 @@
  */
 package fr.theshark34.supdate;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.util.concurrent.atomic.AtomicLong;
+
+import fr.theshark34.supdate.files.DownloadTask;
 
 /**
  * The BarAPI
@@ -37,45 +37,44 @@ import java.io.FileOutputStream;
 public class BarAPI {
 
     /**
-     * The download bytes for the current session
+     * The download bytes for the current session. 
+     * We need an atomic long because files' downloads are multi-threaded.
      */
-    private static long numberOfTotalDownloadedBytes = 0;
+    private static AtomicLong numberOfTotalDownloadedBytes = new AtomicLong();
 
     /**
-     * The number of bytes to download for the current session
+     * The number of bytes to download for the current session. 
+     * A atomic long is not necessary because the using of this field is not multi-threaded, {@link Updater#start()}.
      */
-    private static long numberOfTotalBytesToDownload = 0;
+    private static AtomicLong numberOfTotalBytesToDownload = new AtomicLong();
 
     /**
-     * The number of downloaded file
+     * The number of downloaded files.
      */
     private static int numberOfDownloadedFiles = 0;
 
     /**
-     * The number of file to download
+     * The number of files to download.
      */
     private static int numberOfFileToDownload = 0;
 
     /**
-     * Sets the number of total downloaded bytes
-     *
-     * @param numberOfTotalDownloadedBytes
-     *            The new number of total downloaded bytes
+     * Increments the number of downloaded bytes. Used only by {@link DownloadTask#run()}.
      */
-    public static void setNumberOfTotalDownloadedBytes(long numberOfTotalDownloadedBytes) {
-        BarAPI.numberOfTotalDownloadedBytes = numberOfTotalDownloadedBytes;
+    public static void incrementNumberOfTotalDownloadedBytes() {
+    	numberOfTotalDownloadedBytes.incrementAndGet();
     }
-
+    
     /**
      * Sets the number of total bytes to download
      *
-     * @param numberOfTotalBytesToDownload
+     * @param total
      *            The new number of total bytes to download
      */
-    public static void setNumberOfTotalBytesToDownload(long numberOfTotalBytesToDownload) {
-        BarAPI.numberOfTotalBytesToDownload = numberOfTotalBytesToDownload;
+    public static void setNumberOfTotalBytesToDownload(long total) {
+    	numberOfTotalBytesToDownload.set(total);
     }
-
+    
     /**
      * Sets the number of downloaded files
      *
@@ -83,7 +82,7 @@ public class BarAPI {
      *            The new number of downloaded files
      */
     public static void setNumberOfDownloadedFiles(int numberOfDownloadedFiles) {
-        BarAPI.numberOfDownloadedFiles = numberOfDownloadedFiles;
+    	BarAPI.numberOfDownloadedFiles = numberOfDownloadedFiles;
     }
 
     /**
@@ -93,7 +92,7 @@ public class BarAPI {
      *            The new number of file to download
      */
     public static void setNumberOfFileToDownload(int numberOfFileToDownload) {
-        BarAPI.numberOfFileToDownload = numberOfFileToDownload;
+    	BarAPI.numberOfFileToDownload = numberOfFileToDownload;
     }
 
     /**
@@ -102,7 +101,7 @@ public class BarAPI {
      * @return The downloaded bytes
      */
     public static long getNumberOfTotalDownloadedBytes() {
-        return numberOfTotalDownloadedBytes;
+    	return numberOfTotalDownloadedBytes.get();
     }
 
     /**
@@ -111,7 +110,7 @@ public class BarAPI {
      * @return The bytes to download
      */
     public static long getNumberOfTotalBytesToDownload() {
-        return numberOfTotalBytesToDownload;
+    	return numberOfTotalBytesToDownload.get();
     }
 
     /**
@@ -120,7 +119,7 @@ public class BarAPI {
      * @return The downloaded files
      */
     public static int getNumberOfDownloadedFiles() {
-        return numberOfDownloadedFiles;
+    	return numberOfDownloadedFiles;
     }
 
     /**
@@ -129,7 +128,7 @@ public class BarAPI {
      * @return The files to download
      */
     public static int getNumberOfFileToDownload() {
-        return numberOfFileToDownload;
+    	return numberOfFileToDownload;
     }
 
 }

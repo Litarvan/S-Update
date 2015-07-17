@@ -18,31 +18,33 @@
  */
 package fr.theshark34.supdate;
 
-import com.google.gson.reflect.TypeToken;
-import fr.theshark34.supdate.application.Application;
-import fr.theshark34.supdate.application.event.ApplicationEvent;
-import fr.theshark34.supdate.application.event.FileCheckingEvent;
-import fr.theshark34.supdate.check.CheckMethod;
-import fr.theshark34.supdate.check.FileInfos;
-import fr.theshark34.supdate.check.md5.MD5CheckMethod;
-import fr.theshark34.supdate.exception.*;
-import fr.theshark34.supdate.models.CheckApplicationResponse;
-import fr.theshark34.supdate.models.CheckCheckMethodResponse;
-import fr.theshark34.supdate.models.StateResponse;
-import fr.theshark34.supdate.models.VersionResponse;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import fr.theshark34.supdate.application.Application;
+import fr.theshark34.supdate.application.event.ApplicationEvent;
+import fr.theshark34.supdate.application.event.FileCheckingEvent;
+import fr.theshark34.supdate.check.CheckMethod;
+import fr.theshark34.supdate.check.FileInfos;
+import fr.theshark34.supdate.check.md5.MD5CheckMethod;
+import fr.theshark34.supdate.exception.BadServerResponseException;
+import fr.theshark34.supdate.exception.BadServerVersionException;
+import fr.theshark34.supdate.exception.ServerDisabledException;
+import fr.theshark34.supdate.exception.ServerMissingSomethingException;
+import fr.theshark34.supdate.exception.UnableToCheckException;
+import fr.theshark34.supdate.models.CheckApplicationResponse;
+import fr.theshark34.supdate.models.CheckCheckMethodResponse;
+import fr.theshark34.supdate.models.StateResponse;
+import fr.theshark34.supdate.models.VersionResponse;
 
 /**
  * The Updater object
@@ -159,21 +161,27 @@ public class Updater {
         BarAPI.setNumberOfFileToDownload(filesToDownload.size());
 
         System.out.println("[S-Update] " + fileList.size() + " files were checked, " + (filesToDownload.size() == 0 ? "nothing to download" : "need to download " + filesToDownload.size() + " of them."));
-        if(filesToDownload.size() != 0)
-            System.out.println("[S-Update] Downloading the files");
 
         // Setting the cookie manager
         CookieManager cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
         // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
+        System.out.println("[S-Update] Calculating how many bytes do download");
         for(Entry<URL, File> entry : filesToDownload.entrySet())
-            BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLengthLong());
-
+        {
+            BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLength());
+        }
+        
+        System.out.println("[S-Update] Bytes to download: " + BarAPI.getNumberOfTotalBytesToDownload());
+        
+        if(filesToDownload.size() != 0)
+            System.out.println("[S-Update] Starting download the files");
+        
         // Downloading the files
         for(Entry<URL, File> entry : filesToDownload.entrySet())
             sUpdate.getFileManager().download(entry.getKey(), entry.getValue());
-
+        
         // Terminating
         sUpdate.getFileManager().stop();
 
@@ -321,7 +329,8 @@ public class Updater {
      *
      * @return The list of the files
      */
-    private List<FileInfos> createFileList() throws IOException, BadServerResponseException {
+    @SuppressWarnings("unchecked")
+	private List<FileInfos> createFileList() throws IOException, BadServerResponseException {
         // Sending a list files request to the server
         Object response = sUpdate.getServerRequester().sendRequest("ListFiles/" + sUpdate.getCheckMethod().getName().replaceAll(" ", "%20"), null, sUpdate.getCheckMethod().getListType());
 

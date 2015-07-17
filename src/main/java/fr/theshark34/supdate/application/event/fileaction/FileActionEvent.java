@@ -18,11 +18,11 @@
  */
 package fr.theshark34.supdate.application.event.fileaction;
 
+import java.io.File;
+
 import fr.theshark34.supdate.SUpdate;
 import fr.theshark34.supdate.application.event.ApplicationEvent;
 import fr.theshark34.supdate.files.FileAction;
-
-import java.io.File;
 
 /**
  * The FileAction Event

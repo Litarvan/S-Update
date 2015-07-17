@@ -34,7 +34,9 @@ import java.io.IOException;
  */
 public class FileNoPermissionException extends IOException {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * The FileNoPermission Exception
      *
      * @param file

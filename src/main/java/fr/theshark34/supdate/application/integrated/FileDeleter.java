@@ -18,7 +18,21 @@
  */
 package fr.theshark34.supdate.application.integrated;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.reflect.TypeToken;
+
 import fr.theshark34.supdate.SUpdate;
 import fr.theshark34.supdate.application.Application;
 import fr.theshark34.supdate.application.event.ApplicationEvent;
@@ -26,13 +40,6 @@ import fr.theshark34.supdate.application.event.FileCheckingEvent;
 import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 import fr.theshark34.supdate.exception.BadServerResponseException;
 import fr.theshark34.supdate.exception.FileNoPermissionException;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The FileDeleter
@@ -85,7 +92,8 @@ public class FileDeleter extends Application {
                 throw new BadServerResponseException((String) list);
 
             // Getting the list
-            List<String> fileList = (List<String>) list;
+            @SuppressWarnings("unchecked")
+			List<String> fileList = (List<String>) list;
 
             // For each file in the list
             for(String file : fileList)

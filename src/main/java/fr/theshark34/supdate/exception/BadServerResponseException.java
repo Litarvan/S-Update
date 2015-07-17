@@ -31,7 +31,9 @@ package fr.theshark34.supdate.exception;
  */
 public class BadServerResponseException extends Exception {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * The BadServerResponse Exception
      *
      * @param response

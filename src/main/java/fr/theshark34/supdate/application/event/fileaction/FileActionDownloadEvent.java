@@ -18,11 +18,11 @@
  */
 package fr.theshark34.supdate.application.event.fileaction;
 
-import fr.theshark34.supdate.SUpdate;
-import fr.theshark34.supdate.files.FileAction;
-
 import java.io.File;
 import java.net.URL;
+
+import fr.theshark34.supdate.SUpdate;
+import fr.theshark34.supdate.files.FileAction;
 
 /**
  * The 'Download' FileAction Event

@@ -42,7 +42,6 @@ public class StateResponse {
      *            The received state
      */
     public StateResponse(String version) {
-        this.state = state;
     }
 
     /**

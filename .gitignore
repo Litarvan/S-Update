@@ -4,3 +4,4 @@ build/
 .gradle/
 *.iws
 *.ipr
+/bin/

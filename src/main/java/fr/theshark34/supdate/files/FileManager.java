@@ -18,18 +18,19 @@
  */
 package fr.theshark34.supdate.files;
 
+import java.io.File;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import fr.theshark34.supdate.BarAPI;
 import fr.theshark34.supdate.SUpdate;
 import fr.theshark34.supdate.application.Application;
 import fr.theshark34.supdate.application.event.fileaction.FileActionDownloadEvent;
 import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 import fr.theshark34.supdate.application.event.fileaction.FileActionRenameEvent;
 import fr.theshark34.supdate.exception.FileNoPermissionException;
-
-import java.io.File;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The FileManager
@@ -163,6 +164,8 @@ public class FileManager {
             pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
         } catch (InterruptedException e) {
         }
+        
+        System.out.println("[S-Update] Total downloaded bytes: " + BarAPI.getNumberOfTotalDownloadedBytes());
     }
 
 }

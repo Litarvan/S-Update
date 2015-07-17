@@ -18,11 +18,14 @@
  */
 package fr.theshark34.supdate.files;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import fr.theshark34.supdate.BarAPI;
-import java.io.*;
-import java.net.*;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 
 /**
  * The Download Task
@@ -79,9 +82,10 @@ public class DownloadTask implements Runnable {
 
             // Transfering
             byte[] fileData = new byte[connection.getContentLength()];
+            
             int x;
             for (x = 0; x < fileData.length; x++)  {
-                BarAPI.setNumberOfTotalDownloadedBytes(BarAPI.getNumberOfTotalDownloadedBytes() + 1);
+                BarAPI.incrementNumberOfTotalDownloadedBytes();
                 fileData[x] = dis.readByte();
             }
 

@@ -18,6 +18,9 @@
  */
 package fr.theshark34.supdate;
 
+import java.io.File;
+import java.io.IOException;
+
 import fr.theshark34.supdate.application.Application;
 import fr.theshark34.supdate.application.ApplicationManager;
 import fr.theshark34.supdate.check.CheckMethod;
@@ -26,9 +29,6 @@ import fr.theshark34.supdate.exception.BadServerVersionException;
 import fr.theshark34.supdate.exception.ServerDisabledException;
 import fr.theshark34.supdate.exception.ServerMissingSomethingException;
 import fr.theshark34.supdate.files.FileManager;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * The S-Update object

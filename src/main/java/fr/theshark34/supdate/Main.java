@@ -1,18 +1,18 @@
 package fr.theshark34.supdate;
 
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
+import javax.swing.WindowConstants;
+
 import fr.theshark34.supdate.application.integrated.FileDeleter;
 import fr.theshark34.supdate.exception.BadServerResponseException;
 import fr.theshark34.supdate.exception.BadServerVersionException;
 import fr.theshark34.supdate.exception.ServerDisabledException;
 import fr.theshark34.supdate.exception.ServerMissingSomethingException;
-
-import fr.theshark34.supdate.files.DownloadTask;
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
-import javax.swing.WindowConstants;
 
 public class Main {
 
@@ -34,7 +34,8 @@ public class Main {
 
         frame.setVisible(true);
 
-        SUpdate su = new SUpdate("http://localhost/3/S-Update-Server/", new File("C:/Users/Adrien/Documents/Su3Test"));
+//        SUpdate su = new SUpdate("http://localhost/3/S-Update-Server/", new File("C:/Users/Adrien/Documents/Su3Test"));
+      SUpdate su = new SUpdate("http://localhost/supdate3/", new File("/home/victor/testsu/"));
         su.addApplication(new FileDeleter());
 
         Thread t = new Thread() {

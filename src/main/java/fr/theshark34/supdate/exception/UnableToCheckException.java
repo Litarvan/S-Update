@@ -19,7 +19,6 @@
 package fr.theshark34.supdate.exception;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The UnableToCheck Exception
@@ -35,7 +34,9 @@ import java.io.IOException;
  */
 public class UnableToCheckException extends Exception {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * The UnableToCheck Exception
      *
      * @param file

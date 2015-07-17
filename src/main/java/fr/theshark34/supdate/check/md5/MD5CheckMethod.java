@@ -18,12 +18,6 @@
  */
 package fr.theshark34.supdate.check.md5;
 
-import com.google.gson.reflect.TypeToken;
-import fr.theshark34.supdate.SUpdate;
-import fr.theshark34.supdate.check.CheckMethod;
-import fr.theshark34.supdate.check.FileInfos;
-import fr.theshark34.supdate.exception.UnableToCheckException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,6 +26,13 @@ import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import com.google.gson.reflect.TypeToken;
+
+import fr.theshark34.supdate.SUpdate;
+import fr.theshark34.supdate.check.CheckMethod;
+import fr.theshark34.supdate.check.FileInfos;
+import fr.theshark34.supdate.exception.UnableToCheckException;
 
 /**
  * The MD5 CheckMethod

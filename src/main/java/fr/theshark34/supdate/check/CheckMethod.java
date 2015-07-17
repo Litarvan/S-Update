@@ -18,10 +18,10 @@
  */
 package fr.theshark34.supdate.check;
 
+import java.lang.reflect.Type;
+
 import fr.theshark34.supdate.SUpdate;
 import fr.theshark34.supdate.exception.UnableToCheckException;
-
-import java.lang.reflect.Type;
 
 /**
  * The Check Method

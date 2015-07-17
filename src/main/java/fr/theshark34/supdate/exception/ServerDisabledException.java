@@ -30,11 +30,12 @@ package fr.theshark34.supdate.exception;
  */
 public class ServerDisabledException extends Exception {
 
-    /**
+	private static final long serialVersionUID = 1L;
+
+	/**
      * The ServerDisabledException Exception
      */
     public ServerDisabledException() {
         super("The server is disabled");
     }
-
 }

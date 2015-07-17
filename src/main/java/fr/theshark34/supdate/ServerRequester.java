@@ -1,15 +1,14 @@
 package fr.theshark34.supdate;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import fr.theshark34.supdate.exception.BadServerResponseException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * The ServerRequester
@@ -47,7 +46,7 @@ public class ServerRequester {
      * @param model
      *            The model object for the JSON parsing
      */
-    public Object sendRequest(String request, Class model, Type type) throws IOException {
+    public Object sendRequest(String request, Class<?> model, Type type) throws IOException {
         // Creating the URL
         URL requestUrl = new URL(sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + request);
 

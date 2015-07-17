@@ -18,10 +18,10 @@
  */
 package fr.theshark34.supdate.application;
 
+import java.util.ArrayList;
+
 import fr.theshark34.supdate.SUpdate;
 import fr.theshark34.supdate.application.event.ApplicationEvent;
-
-import java.util.ArrayList;
 
 /**
  * The Application Manager
