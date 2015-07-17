@@ -26,13 +26,13 @@ import fr.theshark34.supdate.files.DownloadTask;
  * The BarAPI
  *
  * <p>
- *     The variable API has a lot of variables and methods to
+ *     The BarAPI has a lot of variables and methods to
  *     allow you making the best progress bar, but also
  *     YOUR progress bar.
  * </p>
  *
  * @version 3.0.0-BETA
- * @author TheShark34
+ * @author TheShark34, Wy trem
  */
 public class BarAPI {
 

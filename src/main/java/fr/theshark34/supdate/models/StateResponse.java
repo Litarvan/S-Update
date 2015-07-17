@@ -41,7 +41,8 @@ public class StateResponse {
      * @param state
      *            The received state
      */
-    public StateResponse(String version) {
+    public StateResponse(String state) {
+        this.state = state;
     }
 
     /**

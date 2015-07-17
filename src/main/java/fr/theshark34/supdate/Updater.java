@@ -167,12 +167,10 @@ public class Updater {
         CookieHandler.setDefault(cookieManager);
 
         // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-        System.out.println("[S-Update] Calculating how many bytes do download");
+        System.out.println("[S-Update] Calculating how many bytes to download");
         for(Entry<URL, File> entry : filesToDownload.entrySet())
-        {
             BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLength());
-        }
-        
+
         System.out.println("[S-Update] Bytes to download: " + BarAPI.getNumberOfTotalBytesToDownload());
         
         if(filesToDownload.size() != 0)
