@@ -5,3 +5,6 @@ build/
 *.iws
 *.ipr
 /bin/
+.project
+.classpath
+.settings/
