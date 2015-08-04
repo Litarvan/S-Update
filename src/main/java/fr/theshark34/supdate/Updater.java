@@ -18,12 +18,15 @@
  */
 package fr.theshark34.supdate;
 
+import com.google.gson.Gson;
+import fr.theshark34.supdate.models.GetTotalBytesResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -125,6 +128,9 @@ public class Updater {
         // Creating the list of files to download
         Map<URL, File> filesToDownload = new HashMap<>();
 
+        // Creating the list of files to download with their relative path
+        List<String> filesPaths = new ArrayList<>();
+
         System.out.println("[S-Update] Checking them");
 
         // For each file infos
@@ -154,6 +160,9 @@ public class Updater {
 
                 // Adding them to the filesToDownload map
                 filesToDownload.put(fileURL, localFile);
+
+                // Adding it to the files paths list
+                filesPaths.add(fileInfos.getFileRelativePath());
             }
         }
 
@@ -166,15 +175,15 @@ public class Updater {
         CookieManager cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
-        // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-        System.out.println("[S-Update] Calculating how many bytes to download");
-        for(Entry<URL, File> entry : filesToDownload.entrySet())
-            BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLength());
+        // If we need to download files
+        if(filesPaths.size() > 0) {
+            // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
+            System.out.print("[S-Update] Bytes to download... ");
+            getBytesToDownload(filesPaths);
+            System.out.println(BarAPI.getNumberOfTotalBytesToDownload());
 
-        System.out.println("[S-Update] Bytes to download: " + BarAPI.getNumberOfTotalBytesToDownload());
-        
-        if(filesToDownload.size() != 0)
             System.out.println("[S-Update] Starting download the files");
+        }
         
         // Downloading the files
         for(Entry<URL, File> entry : filesToDownload.entrySet())
@@ -207,7 +216,7 @@ public class Updater {
         System.out.print("[S-Update] Server... ");
 
         // Sending a get state request to check the server state
-        Object stateResponse = sUpdate.getServerRequester().sendRequest("GetState", StateResponse.class, null);
+        Object stateResponse = sUpdate.getServerRequester().sendRequest("GetState", StateResponse.class);
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(stateResponse instanceof String)
@@ -239,7 +248,7 @@ public class Updater {
         System.out.print("[S-Update] Server version... ");
 
         // Sending a version request to check the server version and ping it
-        Object versionResponse = sUpdate.getServerRequester().sendRequest("Version", VersionResponse.class, null);
+        Object versionResponse = sUpdate.getServerRequester().sendRequest("Version", VersionResponse.class);
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(versionResponse instanceof String)
@@ -273,7 +282,7 @@ public class Updater {
         String checkMethodName = sUpdate.getCheckMethod().getName();
 
         // Sending a check check method request to the server
-        Object response = sUpdate.getServerRequester().sendRequest("CheckCheckMethod/" + checkMethodName.replaceAll(" ", "%20"), CheckCheckMethodResponse.class , null);
+        Object response = sUpdate.getServerRequester().sendRequest("CheckCheckMethod/" + checkMethodName.replaceAll(" ", "%20"), CheckCheckMethodResponse.class);
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)
@@ -297,7 +306,7 @@ public class Updater {
             // If it is server required
             if(sUpdate.getApplicationManager().getApplications().get(i).isServerRequired()) {
                 // Sending a check application request to the server
-                response = sUpdate.getServerRequester().sendRequest("CheckApplication/" + applicationName.replaceAll(" ", "%20"), CheckApplicationResponse.class, null);
+                response = sUpdate.getServerRequester().sendRequest("CheckApplication/" + applicationName.replaceAll(" ", "%20"), CheckApplicationResponse.class);
 
                 // If the response is a string (so its the raw response because the JSON parse failed)
                 if (response instanceof String)
@@ -330,7 +339,7 @@ public class Updater {
     @SuppressWarnings("unchecked")
 	private List<FileInfos> createFileList() throws IOException, BadServerResponseException {
         // Sending a list files request to the server
-        Object response = sUpdate.getServerRequester().sendRequest("ListFiles/" + sUpdate.getCheckMethod().getName().replaceAll(" ", "%20"), null, sUpdate.getCheckMethod().getListType());
+        Object response = sUpdate.getServerRequester().sendRequest("ListFiles/" + sUpdate.getCheckMethod().getName().replaceAll(" ", "%20"), sUpdate.getCheckMethod().getListType());
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)
@@ -338,6 +347,22 @@ public class Updater {
             throw new BadServerResponseException((String) response);
 
         return (List<FileInfos>) response;
+    }
+
+    private void getBytesToDownload(List<String> filesToDownload) throws IOException, BadServerResponseException {
+        // Getting GSON
+        Gson gson = new Gson();
+
+        // Sending a get total bytes request to the server
+        Object response = sUpdate.getServerRequester().sendPostRequest("GetTotalBytes", GetTotalBytesResponse.class, gson.toJson(filesToDownload).replaceAll(" ", "%20").getBytes());
+
+        // If the response is a string (so its the raw response because the JSON parse failed)
+        if(response instanceof String)
+            // Throwing a BadServerResponse exception
+            throw new BadServerResponseException((String) response);
+
+        // Setting it
+        BarAPI.setNumberOfTotalBytesToDownload(((GetTotalBytesResponse) response).getTotalBytes());
     }
 
     /**

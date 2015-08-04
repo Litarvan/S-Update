@@ -84,7 +84,7 @@ public class FileDeleter extends Application {
         System.out.println("[S-Update] [FileDeleter] Getting the ignore list");
         try {
             // Sending a get ignore list request
-            Object list = event.getSUpdate().getServerRequester().sendRequest("GetIgnoreList", null, new TypeToken<List<String>>() {}.getType());
+            Object list = event.getSUpdate().getServerRequester().sendRequest("GetIgnoreList", new TypeToken<List<String>>() {}.getType());
 
             // If the response is a string (so its the raw response because the JSON parse failed)
             if(list instanceof String)
