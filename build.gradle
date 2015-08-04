@@ -3,10 +3,27 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 group = 'fr.theshark34.s-update'
-version = '2.2.0-SNAPSHOT'
+version = '3.0.0-BETA'
 archivesBaseName = 's-update'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://wytrem.github.io/maven/"
+    }
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'net.wytrem:wylog:1.0.0'
+}
+
+jar {
+	from "LICENSE"
+	from "LICENSE.LESSER"
+}
