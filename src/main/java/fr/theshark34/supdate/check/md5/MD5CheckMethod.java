@@ -89,7 +89,10 @@ public class MD5CheckMethod extends CheckMethod {
                 md5 += Integer.toString((b & 0xff) + 0x100, 16).substring(1);
 
             return !md5.equals(md5FileInfo.getMD5());
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException e) {
+            // If it failed, throwing an unable to check exception
+            throw new UnableToCheckException(localFile, e);
+        } catch (NoSuchAlgorithmException e) {
             // If it failed, throwing an unable to check exception
             throw new UnableToCheckException(localFile, e);
         }

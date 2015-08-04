@@ -6,8 +6,8 @@ group = 'fr.theshark34.s-update'
 version = '3.0.0-BETA'
 archivesBaseName = 's-update'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 compileJava.options.encoding = 'UTF-8'
 

@@ -20,6 +20,10 @@ package fr.theshark34.supdate.application.integrated;
 
 import java.io.File;
 import java.io.IOException;
+/*
+
+Deleted because it was for the glob that need Java 7
+
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -27,7 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.BasicFileAttributes;*/
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,13 +101,17 @@ public class FileDeleter extends Application {
 
             // For each file in the list
             for(String file : fileList)
+                /*
+
+                Deleted code, because using glob that need Java 7
+
                 // If this is a glob
                 if(file.startsWith("glob:"))
                     // Doing a glob search, and adding all the result to the list
                     ignoreList.addAll(doGlob(file, event.getSUpdate().getOutputFolder().getAbsolutePath()));
 
                 // Else if not
-                else
+                else*/
                     // Adding it to the list
                     ignoreList.add(file);
         } catch (IOException e) {
@@ -182,6 +190,10 @@ public class FileDeleter extends Application {
         return list;
     }
 
+    /*
+
+    Disabled because it need Java 7
+
     public static ArrayList<String> doGlob(String glob, final String location) throws IOException {
         final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(glob);
         final ArrayList<String> results = new ArrayList<String>();
@@ -203,7 +215,7 @@ public class FileDeleter extends Application {
         });
 
         return results;
-    }
+    }*/
 
     /**
      * Checks if a file is on the ignore list

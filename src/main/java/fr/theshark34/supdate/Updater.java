@@ -126,10 +126,10 @@ public class Updater {
         List<FileInfos> fileList = createFileList();
 
         // Creating the list of files to download
-        Map<URL, File> filesToDownload = new HashMap<>();
+        Map<URL, File> filesToDownload = new HashMap<URL, File>();
 
         // Creating the list of files to download with their relative path
-        List<String> filesPaths = new ArrayList<>();
+        List<String> filesPaths = new ArrayList<String>();
 
         System.out.println("[S-Update] Checking them");
 
