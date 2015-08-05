@@ -115,6 +115,9 @@ public class Updater {
         // Checking the check method and the applications
         checkCheckMethodAndApplications();
 
+        // Sending a request to update the stats
+        sUpdate.getServerRequester().sendRequest("SetStat/IPUpdate");
+
         // For each application
         for(Application app : sUpdate.getApplicationManager().getApplications())
             // Sending the onStart event

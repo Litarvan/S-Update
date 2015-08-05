@@ -52,21 +52,26 @@ public abstract class Application {
 
     /**
      * Called when the application is added to the list
+     *
+     * @param event
+     *            An event that contains some useful informations
      */
     public abstract void onInit(ApplicationEvent event);
 
     /**
      * Called when the update is starting
+     *
+     * @param event
+     *            An event that contains some useful informations
      */
     public abstract void onStart(ApplicationEvent event);
 
     /**
      * Called when a file is being checked
      *
-     * @param file
-     *            The file being checked
-     * @param checkResult
-     *            The result that the checker gave
+     * @param event
+     *            An event that contains some useful informations
+     *
      * @return The new check result
      */
     public abstract boolean onFileChecking(FileCheckingEvent event);
@@ -74,13 +79,16 @@ public abstract class Application {
     /**
      * When a file action is executed
      *
-     * @param args
-     *            The args given by the action
+     * @param event
+     *            An event that contains some useful informations
      */
     public abstract void onFileAction(FileActionEvent event);
 
     /**
      * Called when the update is finished
+     *
+     * @param event
+     *            An event that contains some useful informations
      */
     public abstract void onUpdateEnd(ApplicationEvent event);
 

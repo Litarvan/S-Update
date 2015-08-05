@@ -45,6 +45,16 @@ public class ServerRequester {
      *
      * @param request
      *            The relative URL of the request
+     */
+    public void sendRequest(String request) throws IOException {
+        sendPostRequest(request, null, null, null);
+    }
+
+    /**
+     * Sends a request to the server, and parse its response as a JSON
+     *
+     * @param request
+     *            The relative URL of the request
      * @param model
      *            The model object for the JSON parsing
      */
@@ -53,7 +63,7 @@ public class ServerRequester {
     }
 
     /**
-     * Sends a request to the server
+     * Sends a request to the server, and parse its response as a JSON
      *
      * @param request
      *            The relative URL of the request
@@ -65,7 +75,7 @@ public class ServerRequester {
     }
 
     /**
-     * Sends a request to the server
+     * Sends a request to the server with post data, and parse its response as a JSON
      *
      * @param request
      *            The relative URL of the request
@@ -79,7 +89,7 @@ public class ServerRequester {
     }
 
     /**
-     * Sends a request to the server
+     * Sends a request to the server with post data, and parse its response as a JSON
      *
      * @param request
      *            The relative URL of the request
@@ -109,6 +119,11 @@ public class ServerRequester {
             OutputStream output = connection.getOutputStream();
             output.write(postData);
         }
+
+        // If we don't need to read the response (the model AND the type are null)
+        if(model == null && type == null)
+            // Returning nothing
+            return null;
 
         // Creating the buffered reader
         BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
