@@ -100,7 +100,7 @@ public class DownloadTask implements Runnable {
             fos.close();
 
             // Incrementing the BarAPI 'numberOfDownloadedFiles' variable
-            BarAPI.setNumberOfDownloadedFiles(BarAPI.getNumberOfDownloadedFiles());
+            BarAPI.setNumberOfDownloadedFiles(BarAPI.getNumberOfDownloadedFiles() + 1);
         } catch (IOException e) {
             // If it failed printing a warning message
             System.out.println("[S-Update] WARNING : File " + fileUrl + " wasn't downloaded : " + e);
