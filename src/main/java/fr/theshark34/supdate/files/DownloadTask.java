@@ -27,6 +27,9 @@ import java.net.URL;
 
 import fr.theshark34.supdate.BarAPI;
 
+import static fr.theshark34.supdate.SUpdate.logger;
+
+
 /**
  * The Download Task
  *
@@ -68,7 +71,7 @@ public class DownloadTask implements Runnable {
         dest.getParentFile().mkdirs();
 
         // Printing a message
-        System.out.println("[S-Update] Downloading file " + fileUrl);
+        logger.info("Downloading file %s", fileUrl);
 
         try {
             // Creating the connection
@@ -103,7 +106,7 @@ public class DownloadTask implements Runnable {
             BarAPI.setNumberOfDownloadedFiles(BarAPI.getNumberOfDownloadedFiles());
         } catch (IOException e) {
             // If it failed printing a warning message
-            System.out.println("[S-Update] WARNING : File " + fileUrl + " wasn't downloaded : " + e);
+            logger.warning("File " + fileUrl + " wasn't downloaded, error: ", e);
         }
     }
 

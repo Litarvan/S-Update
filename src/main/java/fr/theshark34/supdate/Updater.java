@@ -46,6 +46,8 @@ import fr.theshark34.supdate.models.CheckCheckMethodResponse;
 import fr.theshark34.supdate.models.StateResponse;
 import fr.theshark34.supdate.models.VersionResponse;
 
+import static fr.theshark34.supdate.SUpdate.logger;
+
 /**
  * The Updater object
  *
@@ -117,7 +119,7 @@ public class Updater {
             // Sending the onStart event
             app.onStart(new ApplicationEvent(sUpdate));
 
-        System.out.println("[S-Update] Listing the files");
+        logger.info("Listing the files");
 
         // Creating the files list
         List<FileInfos> fileList = createFileList();
@@ -125,7 +127,7 @@ public class Updater {
         // Creating the list of files to download
         Map<URL, File> filesToDownload = new HashMap<>();
 
-        System.out.println("[S-Update] Checking them");
+        logger.info("Checking them");
 
         // For each file infos
         for(FileInfos fileInfos : fileList) {
@@ -160,21 +162,21 @@ public class Updater {
         // Setting the BarAPI 'numberOfFileToDownload' variable to the size of the filesToDownload list
         BarAPI.setNumberOfFileToDownload(filesToDownload.size());
 
-        System.out.println("[S-Update] " + fileList.size() + " files were checked, " + (filesToDownload.size() == 0 ? "nothing to download" : "need to download " + filesToDownload.size() + " of them."));
+        logger.info("%d files were checked, %s", fileList.size(), (filesToDownload.size() == 0 ? "nothing to download" : "need to download " + filesToDownload.size() + " of them."));
 
         // Setting the cookie manager
         CookieManager cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
         // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-        System.out.println("[S-Update] Calculating how many bytes to download");
+        logger.info("Calculating how many bytes to download...");
         for(Entry<URL, File> entry : filesToDownload.entrySet())
             BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLength());
 
-        System.out.println("[S-Update] Bytes to download: " + BarAPI.getNumberOfTotalBytesToDownload());
+        logger.info("Bytes to download: %s", BarAPI.getNumberOfTotalBytesToDownload());
         
         if(filesToDownload.size() != 0)
-            System.out.println("[S-Update] Starting download the files");
+        	logger.info("Starting download the files");
         
         // Downloading the files
         for(Entry<URL, File> entry : filesToDownload.entrySet())
@@ -196,15 +198,15 @@ public class Updater {
      * Print infos about some things about... life... and weather...
      */
     private void printInfos() {
-        System.out.println("[S-Update] " + SUpdate.VERSION);
-        System.out.println("[S-Update] Current time is " + new Date(System.currentTimeMillis()).toString());
-        System.out.println("[S-Update] Starting updating...");
-        System.out.println("[S-Update]     Server URL : " + sUpdate.getServerUrl());
-        System.out.println("[S-Update]     Output Dir : " + sUpdate.getOutputFolder().getAbsolutePath());
+    	logger.info("Hello " + SUpdate.VERSION);
+    	logger.info("Current time is %s", new Date(System.currentTimeMillis()).toString());
+    	logger.info("Starting updating...");
+    	logger.info("    Server URL: %s", sUpdate.getServerUrl());
+    	logger.info("    Output Dir: %s", sUpdate.getOutputFolder().getAbsolutePath());
     }
 
     private void checkState() throws BadServerResponseException, IOException, ServerDisabledException {
-        System.out.print("[S-Update] Server... ");
+    	logger.info("Connecting to the server... ");
 
         // Sending a get state request to check the server state
         Object stateResponse = sUpdate.getServerRequester().sendRequest("GetState", StateResponse.class, null);
@@ -236,7 +238,7 @@ public class Updater {
      *            If it failed to do the request
      */
     private void checkVersion() throws BadServerResponseException, BadServerVersionException, IOException {
-        System.out.print("[S-Update] Server version... ");
+    	logger.info("Checking server version... ");
 
         // Sending a version request to check the server version and ping it
         Object versionResponse = sUpdate.getServerRequester().sendRequest("Version", VersionResponse.class, null);
@@ -261,14 +263,14 @@ public class Updater {
         else if (version < minVersion)
             throw new BadServerVersionException(splittedMinVersion[0], splittedVersion[0], false);
 
-        System.out.println(((VersionResponse) versionResponse).getVersion());
+        logger.info(((VersionResponse) versionResponse).getVersion());
     }
 
     /**
      * Checks if the check method is installed on the server
      */
     private void checkCheckMethodAndApplications() throws BadServerResponseException, ServerMissingSomethingException, IOException {
-        System.out.print("[S-Update] Selected check method... ");
+    	logger.info("Selected check method... ");
         // Getting the check method name
         String checkMethodName = sUpdate.getCheckMethod().getName();
 
@@ -285,10 +287,12 @@ public class Updater {
             // Throwing a new ServerMissingSomething Exception
             throw new ServerMissingSomethingException("the Check Method " + checkMethodName);
 
-        System.out.println(checkMethodName);
+        logger.info(checkMethodName);
 
-        System.out.print("[S-Update] Loaded Applications... ");
+        logger.info("Loaded Applications... ");
 
+        String appsList = "";
+        
         // For each applications
         for(int i = 0; i < sUpdate.getApplicationManager().getApplications().size(); i++) {
             // Getting its name
@@ -309,17 +313,19 @@ public class Updater {
                     // Throwing a new ServerMissingSomething Exception
                     throw new ServerMissingSomethingException("the application " + applicationName);
             }
-
+            
             if(i + 1 < sUpdate.getApplicationManager().getApplications().size())
-                System.out.print(applicationName + ", ");
+                appsList += applicationName + ", ";
             else
-                System.out.println(applicationName + ".");
+                appsList += applicationName + ".";
         }
+        
+        logger.info("Apps: %s", appsList);
 
         // If there is no application
         if(sUpdate.getApplicationManager().getApplications().size() == 0)
             // Printing 'No application'
-            System.out.println("No application");
+        	logger.info("No application");
     }
 
     /**
@@ -352,7 +358,7 @@ public class Updater {
         int minutes = (int) ((totalTime / (1000 * 60)) % 60);
         int hours   = (int) ((totalTime / (1000 * 60 * 60)) % 24);
         String strTime = hours + " hours " + minutes + " minutes " + seconds + " seconds and " + totalTime % 1000 + " milliseconds.";
-        System.out.println("[S-Update] Update finished, total time : " + strTime);
+        logger.info("Update finished, total time : " + strTime);
     }
 
 }

@@ -32,6 +32,8 @@ import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 import fr.theshark34.supdate.application.event.fileaction.FileActionRenameEvent;
 import fr.theshark34.supdate.exception.FileNoPermissionException;
 
+import static fr.theshark34.supdate.SUpdate.logger;
+
 /**
  * The FileManager
  *
@@ -165,7 +167,7 @@ public class FileManager {
         } catch (InterruptedException e) {
         }
         
-        System.out.println("[S-Update] Total downloaded bytes: " + BarAPI.getNumberOfTotalDownloadedBytes());
+        logger.info("Total downloaded bytes: %d", BarAPI.getNumberOfTotalDownloadedBytes());
     }
 
 }
