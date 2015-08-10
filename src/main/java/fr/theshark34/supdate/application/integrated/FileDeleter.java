@@ -45,6 +45,8 @@ import fr.theshark34.supdate.application.event.fileaction.FileActionEvent;
 import fr.theshark34.supdate.exception.BadServerResponseException;
 import fr.theshark34.supdate.exception.FileNoPermissionException;
 
+import static fr.theshark34.supdate.SUpdate.logger;
+
 /**
  * The FileDeleter
  *
@@ -85,7 +87,7 @@ public class FileDeleter extends Application {
 
     @Override
     public void onStart(ApplicationEvent event) {
-        System.out.println("[S-Update] [FileDeleter] Getting the ignore list");
+        logger.info("[FileDeleter] Getting the ignore list");
         try {
             // Sending a get ignore list request
             Object list = event.getSUpdate().getServerRequester().sendRequest("GetIgnoreList", new TypeToken<List<String>>() {}.getType());
@@ -115,12 +117,12 @@ public class FileDeleter extends Application {
                     // Adding it to the list
                     ignoreList.add(file);
         } catch (IOException e) {
-            System.out.println("[S-Update] [FileDeleter] WARNING: Unable to get the ignore list, desactivating the FileDeleter. Error : " + e);
+            logger.warning("[FileDeleter] Unable to get the ignore list, desactivating the FileDeleter. Error : ", e);
 
             // Setting the list to null, sign of desactivation
             ignoreList = null;
         } catch (BadServerResponseException e) {
-            System.out.println("[S-Update] [FileDeleter] WARNING: Unable to get the ignore list, desactivating the FileDeleter. Error : " + e);
+            logger.warning("[FileDeleter] Unable to get the ignore list, desactivating the FileDeleter. Error : ", e);
 
             // Setting the list to null, sign of desactivation
             ignoreList = null;
@@ -148,7 +150,7 @@ public class FileDeleter extends Application {
 
     @Override
     public void onUpdateEnd(ApplicationEvent event) {
-        System.out.println("[S-Update] [FileDeleter] Deleting the unknown files");
+        logger.info("[FileDeleter] Deleting the unknown files");
 
         // Listing the local folder
         ArrayList<File> files = listFiles(event.getSUpdate().getOutputFolder());
@@ -159,10 +161,10 @@ public class FileDeleter extends Application {
             if(!isOnIgnoreList(event.getSUpdate(), file))
                 // Deleting it
                 try {
-                    System.out.println("[S-Update] [FileDeleter] Deleting file : " + file.getAbsolutePath());
+                    logger.info("[FileDeleter] Deleting file '%s'.", file.getAbsolutePath());
                     event.getSUpdate().getFileManager().delete(file);
                 } catch (FileNoPermissionException e) {
-                    System.out.println("[S-Update] [FileDeleter] WARNING: The file " + file.getAbsolutePath() + " wasn't deleted, " + e);
+                    logger.warning("[FileDeleter] The file '" + file.getAbsolutePath() + "' wasn't deleted, error :",  e);
                 }
     }
 

@@ -21,6 +21,8 @@ package fr.theshark34.supdate;
 import java.io.File;
 import java.io.IOException;
 
+import net.wytrem.wylog.BasicLogger;
+import net.wytrem.wylog.LoggerFactory;
 import fr.theshark34.supdate.application.Application;
 import fr.theshark34.supdate.application.ApplicationManager;
 import fr.theshark34.supdate.check.CheckMethod;
@@ -74,6 +76,11 @@ import fr.theshark34.supdate.files.FileManager;
  */
 public class SUpdate {
 
+	/**
+	 * Unique logger object.
+	 */
+	public static final BasicLogger logger = LoggerFactory.getLogger("S-Update");
+	
     /**
      * The SUpdate version message
      */
