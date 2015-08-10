@@ -180,27 +180,15 @@ public class Updater {
         CookieManager cookieManager = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
-<<<<<<< HEAD
         // If we need to download files
         if(filesPaths.size() > 0) {
             // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-            System.out.print("[S-Update] Bytes to download... ");
+            logger.info("Resquesting bytes to download... ");
             getBytesToDownload(filesPaths);
-            System.out.println(BarAPI.getNumberOfTotalBytesToDownload());
+            logger.info("Done: %d", BarAPI.getNumberOfTotalBytesToDownload());
 
-            System.out.println("[S-Update] Starting download the files");
+            logger.info("Starting download the files");
         }
-=======
-        // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-        logger.info("Calculating how many bytes to download...");
-        for(Entry<URL, File> entry : filesToDownload.entrySet())
-            BarAPI.setNumberOfTotalBytesToDownload(BarAPI.getNumberOfTotalBytesToDownload() + entry.getKey().openConnection().getContentLength());
-
-        logger.info("Bytes to download: %s", BarAPI.getNumberOfTotalBytesToDownload());
-        
-        if(filesToDownload.size() != 0)
-        	logger.info("Starting download the files");
->>>>>>> 3.0
         
         // Downloading the files
         for(Entry<URL, File> entry : filesToDownload.entrySet())
