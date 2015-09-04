@@ -1,7 +1,6 @@
 package fr.theshark34.supdate;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -31,6 +30,11 @@ public class ServerRequester {
     private SUpdate sUpdate;
 
     /**
+     * If the URL rewriting is enabled
+     */
+    private boolean rewrite;
+
+    /**
      * The ServerRequester
      *
      * @param sUpdate
@@ -47,7 +51,7 @@ public class ServerRequester {
      *            The relative URL of the request
      */
     public void sendRequest(String request) throws IOException {
-        sendPostRequest(request, null, null, null);
+        send(request, null, null, null, false);
     }
 
     /**
@@ -59,7 +63,7 @@ public class ServerRequester {
      *            The model object for the JSON parsing
      */
     public Object sendRequest(String request, Class<?> model) throws IOException {
-        return sendPostRequest(request, model, null, null);
+        return send(request, model, null, null, false);
     }
 
     /**
@@ -71,7 +75,41 @@ public class ServerRequester {
      *            The type of the model object for the JSON parsing
      */
     public Object sendRequest(String request, Type type) throws IOException {
-        return sendPostRequest(request, null, type, null);
+        return send(request, null, type, null, false);
+    }
+
+    /**
+     * Sends a post request to the server
+     *
+     * @param request
+     *            The relative URL of the request
+     */
+    public void sendPostRequest(String request) throws IOException {
+        send(request, null, null, null, true);
+    }
+
+    /**
+     * Sends a post request to the server, and parse its response as a JSON
+     *
+     * @param request
+     *            The relative URL of the request
+     * @param model
+     *            The model object for the JSON parsing
+     */
+    public Object sendPostRequest(String request, Class<?> model) throws IOException {
+        return send(request, model, null, null, true);
+    }
+
+    /**
+     * Sends a post request to the server, and parse its response as a JSON
+     *
+     * @param request
+     *            The relative URL of the request
+     * @param type
+     *            The type of the model object for the JSON parsing
+     */
+    public Object sendPostRequest(String request, Type type) throws IOException {
+        return send(request, null, type, null, true);
     }
 
     /**
@@ -85,7 +123,7 @@ public class ServerRequester {
      *            The post data to send
      */
     public Object sendPostRequest(String request, Class<?> model, byte[] postData) throws IOException {
-        return sendPostRequest(request, model, null, postData);
+        return send(request, model, null, postData, true);
     }
 
     /**
@@ -99,12 +137,12 @@ public class ServerRequester {
      *            The post data to send
      */
     public Object sendPostRequest(String request, Type type, byte[] postData) throws IOException {
-        return sendPostRequest(request, null, type, postData);
+        return send(request, null, type, postData, true);
     }
 
-    private Object sendPostRequest(String request, Class<?> model, Type type, byte[] postData) throws IOException {
+    private Object send(String request, Class<?> model, Type type, byte[] postData, boolean post) throws IOException {
         // Creating the URL
-        URL requestUrl = new URL(sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + request);
+        URL requestUrl = new URL(sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + (rewrite ? "index.php/" : "") + request);
 
         // Creating the HTTP Connection
         HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
@@ -112,10 +150,13 @@ public class ServerRequester {
         // Adding some user agents
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
 
+        // Setting post enabled if needed
+        if(post)
+            connection.setRequestMethod("POST");
+
         // Writing the post data if needed
         if(postData != null) {
             connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
             OutputStream output = connection.getOutputStream();
             output.write(postData);
         }
@@ -150,4 +191,22 @@ public class ServerRequester {
             return createdObject;
     }
 
+    /**
+     * Enable or not the URL rewriting on the server
+     *
+     * @param enabled
+     *            True to enable it, false to disable it
+     */
+    public void setRewriteEnabled(boolean enabled) {
+        this.rewrite = enabled;
+    }
+
+    /**
+     * Return if the URL rewriting is enabled
+     *
+     * @return True if it is, false if not
+     */
+    public boolean isRewriteEnabled() {
+        return rewrite;
+    }
 }

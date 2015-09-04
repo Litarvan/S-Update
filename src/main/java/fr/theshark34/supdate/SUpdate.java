@@ -84,12 +84,12 @@ public class SUpdate {
     /**
      * The SUpdate version message
      */
-    public static final String VERSION = "S-Update Client version 3.0.0-BETA by TheShark34";
+    public static final String VERSION = "S-Update Client version 3.1.0-BETA by TheShark34";
 
     /**
      * The minimal server version required
      */
-    public static final String SERV_MIN_VERSION = "3.0.0-BETA";
+    public static final String SERV_MIN_VERSION = "3.1.0-BETA";
 
     /**
      * The url of the S-Update server

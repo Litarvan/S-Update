@@ -48,7 +48,7 @@ import fr.theshark34.supdate.exception.UnableToCheckException;
 public class MD5CheckMethod extends CheckMethod {
 
     public String getName() {
-        return "MD5 Check Method";
+        return "md5-check-method";
     }
 
     public Type getListType() {

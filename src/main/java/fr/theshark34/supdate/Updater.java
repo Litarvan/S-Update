@@ -44,8 +44,7 @@ import fr.theshark34.supdate.exception.BadServerVersionException;
 import fr.theshark34.supdate.exception.ServerDisabledException;
 import fr.theshark34.supdate.exception.ServerMissingSomethingException;
 import fr.theshark34.supdate.exception.UnableToCheckException;
-import fr.theshark34.supdate.models.CheckApplicationResponse;
-import fr.theshark34.supdate.models.CheckCheckMethodResponse;
+import fr.theshark34.supdate.models.CheckResponse;
 import fr.theshark34.supdate.models.StateResponse;
 import fr.theshark34.supdate.models.VersionResponse;
 
@@ -118,7 +117,7 @@ public class Updater {
         checkCheckMethodAndApplications();
 
         // Sending a request to update the stats
-        sUpdate.getServerRequester().sendRequest("SetStat/IPUpdate");
+        sUpdate.getServerRequester().sendRequest("stats/update");
 
         // For each application
         for(Application app : sUpdate.getApplicationManager().getApplications())
@@ -160,7 +159,7 @@ public class Updater {
             // If we need to download the file
             if (checkResult) {
                 // Getting its infos
-                URL fileURL = new URL((sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + FILES_FOLDER + fileInfos.getFileRelativePath()).replaceAll(" ", "%20"));
+                URL fileURL = new URL((sUpdate.getServerUrl() + (sUpdate.getServerUrl().endsWith("/") ? "" : "/") + FILES_FOLDER + "/" + fileInfos.getFileRelativePath()).replaceAll(" ", "%20"));
                 File localFile = new File(sUpdate.getOutputFolder(), fileInfos.getFileRelativePath());
 
                 // Adding them to the filesToDownload map
@@ -183,7 +182,7 @@ public class Updater {
         // If we need to download files
         if(filesPaths.size() > 0) {
             // Adding to the BarAPI 'numberOfTotalBytesToDownload' variable, the size of the file to download
-            logger.info("Resquesting bytes to download... ");
+            logger.info("Requesting bytes to download... ");
             getBytesToDownload(filesPaths);
             logger.info("Done: %d", BarAPI.getNumberOfTotalBytesToDownload());
 
@@ -210,7 +209,7 @@ public class Updater {
      * Print infos about some things about... life... and weather...
      */
     private void printInfos() {
-    	logger.info("Hello " + SUpdate.VERSION);
+    	logger.info(SUpdate.VERSION);
     	logger.info("Current time is %s", new Date(System.currentTimeMillis()).toString());
     	logger.info("Starting updating...");
     	logger.info("    Server URL: %s", sUpdate.getServerUrl());
@@ -221,7 +220,7 @@ public class Updater {
     	logger.info("Connecting to the server... ");
 
         // Sending a get state request to check the server state
-        Object stateResponse = sUpdate.getServerRequester().sendRequest("GetState", StateResponse.class);
+        Object stateResponse = sUpdate.getServerRequester().sendPostRequest("server/is-enabled", StateResponse.class);
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(stateResponse instanceof String)
@@ -229,12 +228,12 @@ public class Updater {
             throw new BadServerResponseException((String) stateResponse);
 
         // Getting the state
-        String state = ((StateResponse) stateResponse).getState();
+        boolean enabled = ((StateResponse) stateResponse).isEnabled();
 
-        System.out.println(state);
+        logger.info("Server " + (enabled ? "enabled" : "disabled !"));
 
         // If the server is disabled
-        if(state.equals("disabled"))
+        if(!enabled)
             // Throwing a server disabled exception
             throw new ServerDisabledException();
     }
@@ -250,10 +249,8 @@ public class Updater {
      *            If it failed to do the request
      */
     private void checkVersion() throws BadServerResponseException, BadServerVersionException, IOException {
-    	logger.info("Checking server version... ");
-
         // Sending a version request to check the server version and ping it
-        Object versionResponse = sUpdate.getServerRequester().sendRequest("Version", VersionResponse.class);
+        Object versionResponse = sUpdate.getServerRequester().sendPostRequest("server/version", VersionResponse.class);
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(versionResponse instanceof String)
@@ -275,19 +272,18 @@ public class Updater {
         else if (version < minVersion)
             throw new BadServerVersionException(splittedMinVersion[0], splittedVersion[0], false);
 
-        logger.info(((VersionResponse) versionResponse).getVersion());
+        logger.info("Version : " + ((VersionResponse) versionResponse).getVersion());
     }
 
     /**
      * Checks if the check method is installed on the server
      */
     private void checkCheckMethodAndApplications() throws BadServerResponseException, ServerMissingSomethingException, IOException {
-    	logger.info("Selected check method... ");
         // Getting the check method name
         String checkMethodName = sUpdate.getCheckMethod().getName();
 
         // Sending a check check method request to the server
-        Object response = sUpdate.getServerRequester().sendRequest("CheckCheckMethod/" + checkMethodName.replaceAll(" ", "%20"), CheckCheckMethodResponse.class);
+        Object response = sUpdate.getServerRequester().sendPostRequest("server/check/checkmethod/" + checkMethodName.replaceAll(" ", "%20"), CheckResponse.class);
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)
@@ -295,13 +291,11 @@ public class Updater {
             throw new BadServerResponseException((String) response);
 
         // If the check method is not present on the server
-        if(!((CheckCheckMethodResponse) response).isMethodPresent())
+        if(!((CheckResponse) response).isPresent())
             // Throwing a new ServerMissingSomething Exception
             throw new ServerMissingSomethingException("the Check Method " + checkMethodName);
 
-        logger.info(checkMethodName);
-
-        logger.info("Loaded Applications... ");
+        logger.info("CheckMethod : " + checkMethodName);
 
         String appsList = "";
         
@@ -313,7 +307,7 @@ public class Updater {
             // If it is server required
             if(sUpdate.getApplicationManager().getApplications().get(i).isServerRequired()) {
                 // Sending a check application request to the server
-                response = sUpdate.getServerRequester().sendRequest("CheckApplication/" + applicationName.replaceAll(" ", "%20"), CheckApplicationResponse.class);
+                response = sUpdate.getServerRequester().sendPostRequest("server/check/application/" + applicationName.replaceAll(" ", "%20"), CheckResponse.class);
 
                 // If the response is a string (so its the raw response because the JSON parse failed)
                 if (response instanceof String)
@@ -321,7 +315,7 @@ public class Updater {
                     throw new BadServerResponseException((String) response);
 
                 // If the application is not present on the server
-                if (!((CheckApplicationResponse) response).isApplicationPresent())
+                if (!((CheckResponse) response).isPresent())
                     // Throwing a new ServerMissingSomething Exception
                     throw new ServerMissingSomethingException("the application " + applicationName);
             }
@@ -332,7 +326,7 @@ public class Updater {
                 appsList += applicationName + ".";
         }
         
-        logger.info("Apps: %s", appsList);
+        logger.info("Applications : %s", appsList);
 
         // If there is no application
         if(sUpdate.getApplicationManager().getApplications().size() == 0)
@@ -348,7 +342,7 @@ public class Updater {
     @SuppressWarnings("unchecked")
 	private List<FileInfos> createFileList() throws IOException, BadServerResponseException {
         // Sending a list files request to the server
-        Object response = sUpdate.getServerRequester().sendRequest("ListFiles/" + sUpdate.getCheckMethod().getName().replaceAll(" ", "%20"), sUpdate.getCheckMethod().getListType());
+        Object response = sUpdate.getServerRequester().sendPostRequest("server/list/" + sUpdate.getCheckMethod().getName().replaceAll(" ", "%20"), sUpdate.getCheckMethod().getListType());
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)
@@ -363,7 +357,7 @@ public class Updater {
         Gson gson = new Gson();
 
         // Sending a get total bytes request to the server
-        Object response = sUpdate.getServerRequester().sendPostRequest("GetTotalBytes", GetTotalBytesResponse.class, gson.toJson(filesToDownload).replaceAll(" ", "%20").getBytes());
+        Object response = sUpdate.getServerRequester().sendPostRequest("server/size", GetTotalBytesResponse.class, gson.toJson(filesToDownload).replaceAll(" ", "%20").getBytes());
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)

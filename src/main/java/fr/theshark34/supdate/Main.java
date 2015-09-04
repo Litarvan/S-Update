@@ -35,7 +35,7 @@ public class Main {
         frame.setVisible(true);
 
 //        SUpdate su = new SUpdate("http://localhost/3/S-Update-Server/", new File("C:/Users/Adrien/Documents/Su3Test"));
-        SUpdate su = new SUpdate("http://localhost/supdate3/", new File("/home/victor/testsu/")); 
+        SUpdate su = new SUpdate("http://localhost/Silex/s-update-server/", new File("C:/Users/Adrien/Documents/AAAAAAA"));
         
         su.addApplication(new FileDeleter());
 
@@ -52,7 +52,7 @@ public class Main {
 
         try {
             su.start();
-        } catch (BadServerResponseException | ServerDisabledException | BadServerVersionException | IOException | ServerMissingSomethingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

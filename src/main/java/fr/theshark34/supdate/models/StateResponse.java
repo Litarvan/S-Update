@@ -33,7 +33,7 @@ public class StateResponse {
     /**
      * The received state
      */
-    private String state;
+    private boolean enabled;
 
     /**
      * The StateResponse
@@ -41,17 +41,17 @@ public class StateResponse {
      * @param state
      *            The received state
      */
-    public StateResponse(String state) {
-        this.state = state;
+    public StateResponse(boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**
      * Return the received state
      *
-     * @return The received state
+     * @return True if the server is enabled, false if not
      */
-    public String getState() {
-        return state;
+    public boolean isEnabled() {
+        return enabled;
     }
 
 }

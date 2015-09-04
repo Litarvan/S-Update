@@ -19,39 +19,39 @@
 package fr.theshark34.supdate.models;
 
 /**
- * The CheckCheckMethod Response
+ * The Check Response
  *
  * <p>
- *    This is the model of the 'Check Check Method' request response.
+ *    This is the model of the 'Check something' request response.
  * </p>
  *
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class CheckCheckMethodResponse {
+public class CheckResponse {
 
     /**
-     * If the check method is present on the server
+     * If the application/check method is present on the server
      */
-    private boolean methodPresent;
+    private boolean present;
 
     /**
-     * The CheckCheckMethod Response
+     * The CheckApplication Response
      *
-     * @param methodPresent
-     *            If the check method is present on the server
+     * @param present
+     *            If the application/check method is present on the server
      */
-    public CheckCheckMethodResponse(boolean methodPresent) {
-        this.methodPresent = methodPresent;
+    public CheckResponse(boolean present) {
+        this.present = present;
     }
 
     /**
-     * Return if the check method is present on the server
+     * Return if the application/check method is present on the server
      *
-     * @return If the check method is on the server
+     * @return If the application/check method is on the server
      */
-    public boolean isMethodPresent() {
-        return methodPresent;
+    public boolean isPresent() {
+        return present;
     }
 
 }
