@@ -27,3 +27,13 @@ jar {
 	from "LICENSE"
 	from "LICENSE.LESSER"
 }
+
+task fatjar(type: Jar) {
+    from {
+    	configurations.compile.collect {
+    		it.isDirectory() ? it : zipTree(it)
+    	}
+    }
+    
+    with jar
+}

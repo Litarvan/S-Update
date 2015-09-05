@@ -28,21 +28,21 @@ package fr.theshark34.supdate.models;
  * @version 3.0.0-BETA
  * @author TheShark34
  */
-public class GetTotalBytesResponse {
+public class SizeResponse {
 
     /**
      * The number of total bytes to download
      */
-    private long totalBytes;
+    private long size;
 
     /**
      * GetTotalBytes Response
      *
-     * @param totalBytes
+     * @param size
      *            The number of total bytes to download
      */
-    public GetTotalBytesResponse(long totalBytes) {
-        this.totalBytes = totalBytes;
+    public SizeResponse(long size) {
+        this.size = size;
     }
 
     /**
@@ -50,8 +50,8 @@ public class GetTotalBytesResponse {
      *
      * @return The total bytes to download
      */
-    public long getTotalBytes() {
-        return totalBytes;
+    public long getSize() {
+        return size;
     }
 
 }

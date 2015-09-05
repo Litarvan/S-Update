@@ -19,7 +19,7 @@
 package fr.theshark34.supdate;
 
 import com.google.gson.Gson;
-import fr.theshark34.supdate.models.GetTotalBytesResponse;
+import fr.theshark34.supdate.models.SizeResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.CookieHandler;
@@ -117,7 +117,7 @@ public class Updater {
         checkCheckMethodAndApplications();
 
         // Sending a request to update the stats
-        sUpdate.getServerRequester().sendRequest("stats/update");
+        sUpdate.getServerRequester().sendPostRequest("stats/update");
 
         // For each application
         for(Application app : sUpdate.getApplicationManager().getApplications())
@@ -357,7 +357,7 @@ public class Updater {
         Gson gson = new Gson();
 
         // Sending a get total bytes request to the server
-        Object response = sUpdate.getServerRequester().sendPostRequest("server/size", GetTotalBytesResponse.class, gson.toJson(filesToDownload).replaceAll(" ", "%20").getBytes());
+        Object response = sUpdate.getServerRequester().sendPostRequest("server/size", SizeResponse.class, gson.toJson(filesToDownload).replaceAll(" ", "%20").getBytes());
 
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)
@@ -365,7 +365,7 @@ public class Updater {
             throw new BadServerResponseException((String) response);
 
         // Setting it
-        BarAPI.setNumberOfTotalBytesToDownload(((GetTotalBytesResponse) response).getTotalBytes());
+        BarAPI.setNumberOfTotalBytesToDownload(((SizeResponse) response).getSize());
     }
 
     /**

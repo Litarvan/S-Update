@@ -38,7 +38,7 @@ public class StateResponse {
     /**
      * The StateResponse
      *
-     * @param state
+     * @param enabled
      *            The received state
      */
     public StateResponse(boolean enabled) {
