@@ -3,7 +3,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 group = 'fr.theshark34.s-update'
-version = '3.0.0-BETA'
+version = '3.1.0-BETA'
 archivesBaseName = 's-update'
 
 sourceCompatibility = 1.6
