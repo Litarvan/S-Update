@@ -53,5 +53,4 @@ public class SizeResponse {
     public long getSize() {
         return size;
     }
-
 }

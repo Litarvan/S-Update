@@ -358,12 +358,12 @@ public class Updater {
 
         // Sending a get total bytes request to the server
         Object response = sUpdate.getServerRequester().sendPostRequest("server/size", SizeResponse.class, gson.toJson(filesToDownload).replaceAll(" ", "%20").getBytes());
-
+        
         // If the response is a string (so its the raw response because the JSON parse failed)
         if(response instanceof String)
             // Throwing a BadServerResponse exception
             throw new BadServerResponseException((String) response);
-
+        
         // Setting it
         BarAPI.setNumberOfTotalBytesToDownload(((SizeResponse) response).getSize());
     }

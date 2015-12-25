@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
-    compile 'net.wytrem:wylog:1.0.0'
+    compile 'net.wytrem:wylog:1.2'
 }
 
 jar {

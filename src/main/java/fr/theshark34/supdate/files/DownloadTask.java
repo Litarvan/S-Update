@@ -79,28 +79,30 @@ public class DownloadTask implements Runnable {
 
             // Adding some user agents
             connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
-
+            
             // Creating the data input stream
             DataInputStream dis = new DataInputStream(connection.getInputStream());
 
             // Transfering
             byte[] fileData = new byte[connection.getContentLength()];
-            
+
             int x;
             for (x = 0; x < fileData.length; x++)  {
                 BarAPI.incrementNumberOfTotalDownloadedBytes();
                 fileData[x] = dis.readByte();
             }
-
+            
             // Closing the input stream
             dis.close();
 
             // Writing the file
             FileOutputStream fos = new FileOutputStream(dest);
             fos.write(fileData);
-
+            
             // Closing the output stream
             fos.close();
+            
+            logger.info("Done downloading %s", fileUrl);
 
             // Incrementing the BarAPI 'numberOfDownloadedFiles' variable
             BarAPI.setNumberOfDownloadedFiles(BarAPI.getNumberOfDownloadedFiles() + 1);
