@@ -1,9 +1,8 @@
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
+apply plugin: 'kotlin'
 
-group = 'fr.theshark34.s-update'
-version = '3.1.0-BETA'
+group = 'fr.litarvan.s-update'
+version = '3.2.0-BETA'
 archivesBaseName = 's-update'
 
 sourceCompatibility = 1.6
@@ -11,16 +10,35 @@ targetCompatibility = 1.6
 
 compileJava.options.encoding = 'UTF-8'
 
+buildscript {
+    ext.kotlin_version = '1.0.0-beta-4589'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 repositories {
     mavenCentral()
+
     maven {
         url "http://wytrem.github.io/maven/"
+    }
+
+    flatDir {
+        dirs 'lib'
     }
 }
 
 dependencies {
-    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'com.google.code.gson:gson:2.5'
     compile 'net.wytrem:wylog:1.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile name: 'javamurmur-1.0.0'
 }
 
 jar {
@@ -29,11 +47,14 @@ jar {
 }
 
 task fatjar(type: Jar) {
+    from "LICENSE"
+    from "LICENSE.LESSER"
+
     from {
     	configurations.compile.collect {
     		it.isDirectory() ? it : zipTree(it)
     	}
     }
-    
+
     with jar
 }

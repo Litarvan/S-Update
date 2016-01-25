@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 TheShark34
+ * Copyright 2015-2016 Adrien Navratil
  *
  * This file is part of S-Update.
 
@@ -16,54 +16,46 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.check;
+package fr.theshark34.supdate.check
 
-import java.lang.reflect.Type;
-
-import fr.theshark34.supdate.SUpdate;
-import fr.theshark34.supdate.exception.UnableToCheckException;
+import fr.theshark34.supdate.SUpdate
+import fr.theshark34.supdate.UnableToCheckException
+import java.lang.reflect.Type
 
 /**
  * The Check Method
  *
- * <p>
- *    The Check Method is the method to check the files
- *    to know if we need to download it or not.
- * </p>
+ * The Check Method is the method to check the files
+ * to know if we need to download it or not.
  *
- * @version 3.0.0-BETA
- * @author TheShark34
+ * @version 3.2.0-BETA
+ * @author Litarvan
  */
-public abstract class CheckMethod {
-
+abstract class CheckMethod
+{
     /**
      * The Check Method name, need to be the same as the one
      * on the server, it will be checked to know is the check
      * method is installed on the server.
-     *
-     * @return The Check Method name
      */
-    public abstract String getName();
+    abstract val name: String
 
     /**
      * The Type object for the file list, use something like
      * this :
      *
-     * <p>
-     *  new TypeToken<List<YourClassExtendingFileInfos>>(){}.getType();
-     * </p>
-     *
-     * @return A type object representing the file list
+     * new TypeToken>(){}.getType();
      */
-    public abstract Type getListType();
+    abstract val listType: Type
 
     /**
      * Check a file
      *
-     * @param infos
-     *            The file infos
+     * @param sUpdate The current SUpdate instance
+     * @param infos The file infos
+     *
      * @return If we need to download the file
      */
-    public abstract boolean checkFile(SUpdate sUpdate, FileInfos infos) throws UnableToCheckException;
-
+    @Throws(UnableToCheckException::class)
+    abstract fun checkFile(sUpdate: SUpdate, infos: FileInfos): Boolean
 }

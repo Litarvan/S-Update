@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 TheShark34
+ * Copyright 2015-2016 Adrien Navratil
  *
  * This file is part of S-Update.
 
@@ -16,52 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.application;
+package fr.theshark34.supdate.application
 
-import java.util.ArrayList;
-
-import fr.theshark34.supdate.SUpdate;
-import fr.theshark34.supdate.application.event.ApplicationEvent;
+import fr.theshark34.supdate.SUpdate
+import java.util.*
 
 /**
  * The Application Manager
  *
- * <p>
- *     This is the application manager, where all the applications
- *     are registered. It call their events, and things like this.
- * </p>
+ * This is the application manager, where all the applications
+ * are registered. It call their events, and things like this.
  *
- * @version 3.0.0-BETA
- * @author TheShark34
+ * @version 3.2.0-BETA
+ * @author Litarvan
  */
-public class ApplicationManager {
-
+class ApplicationManager
+{
     /**
      * The list of all the loaded applications
      */
-    private ArrayList<Application> applications = new ArrayList<Application>();
+    val applications = ArrayList<Application>()
 
     /**
      * Load, then add an application
      *
-     * @param application
-     *            The application to add
+     * @param application The application to add
      */
-    public void addApplication(SUpdate sUpdate, Application application) {
+    fun addApplication(sUpdate: SUpdate, application: Application)
+    {
         // Adding the application to the list
-        applications.add(application);
+        applications.add(application)
 
         // Then sending the onInit event
-        application.onInit(new ApplicationEvent(sUpdate));
+        application.onInit(ApplicationEvent(sUpdate))
     }
-
-    /**
-     * Returns the list of all the loaded applications
-     *
-     * @return The list of applications
-     */
-    public ArrayList<Application> getApplications() {
-        return applications;
-    }
-
 }
