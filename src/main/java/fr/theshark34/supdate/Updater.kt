@@ -52,7 +52,7 @@ class Updater(val sUpdate: SUpdate)
      * @throws ServerMissingSomethingException If the server is missing the check method or an application
      * @throws IOException If it failed to do the request
      */
-    @Throws(BadServerResponseException::class, ServerDisabledException::class, BadServerVersionException::class, ServerMissingSomethingException::class, IOException::class)
+    @Throws(SUpdateException::class, IOException::class)
     fun start()
     {
         // Printing a beautiful message
@@ -184,7 +184,7 @@ class Updater(val sUpdate: SUpdate)
      * @throws ServerDisabledException If the server is disabled
      * @throws IOException If it failed to do the request
      */
-    @Throws(BadServerResponseException::class, IOException::class, ServerDisabledException::class)
+    @Throws(SUpdateException::class, IOException::class)
     private fun checkState()
     {
         LOGGER.info("Connecting to the server... ")
@@ -215,7 +215,7 @@ class Updater(val sUpdate: SUpdate)
      * @throws BadServerVersionException If the version isn't at least the min version
      * @throws IOException If it failed to do the request
      */
-    @Throws(BadServerResponseException::class, BadServerVersionException::class, IOException::class)
+    @Throws(SUpdateException::class, IOException::class)
     private fun checkVersion()
     {
         // Sending a version request to check the server version and ping it
@@ -247,7 +247,7 @@ class Updater(val sUpdate: SUpdate)
     /**
      * Checks if the check method is installed on the server
      */
-    @Throws(BadServerResponseException::class, ServerMissingSomethingException::class, IOException::class)
+    @Throws(SUpdateException::class, IOException::class)
     private fun checkCheckMethodAndApplications()
     {
         // Getting the check method name

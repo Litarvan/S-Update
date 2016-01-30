@@ -40,11 +40,6 @@ import kotlin.text.endsWith
 class ServerRequester(val sUpdate: SUpdate)
 {
     /**
-     * If the URL rewriting is enabled
-     */
-    var isRewriteEnabled: Boolean = false
-
-    /**
      * Sends a request to the server
      *
      * @param request The relative URL of the request
@@ -128,7 +123,7 @@ class ServerRequester(val sUpdate: SUpdate)
     private fun send(request: String, model: Class<*>?, type: Type?, postData: ByteArray?, post: Boolean): Any?
     {
         // Creating the URL
-        val requestUrl = URL(sUpdate.serverUrl + (if (sUpdate.serverUrl.endsWith("/")) "" else "/") + (if (isRewriteEnabled) "index.php/" else "") + request)
+        val requestUrl = URL(sUpdate.serverUrl + (if (sUpdate.serverUrl.endsWith("/")) "" else "/") + "index.php/" + request)
 
         // Creating the HTTP Connection
         val connection = requestUrl.openConnection() as HttpURLConnection

@@ -77,6 +77,6 @@ class Murmur3CheckMethod : CheckMethod()
  * the infos about a file, its name and its hash.
  *
  * @version 3.2.0-BETA
- * @author TheShark34
+ * @author Litarvan
  */
 class Murmur3FileInfos(fileRelativePath: String, val hash: String) : FileInfos(fileRelativePath)
