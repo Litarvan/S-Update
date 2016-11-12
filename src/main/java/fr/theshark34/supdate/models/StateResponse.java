@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Adrien Navratil
+ * Copyright 2015 TheShark34
  *
  * This file is part of S-Update.
 
@@ -16,15 +16,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with S-Update.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.theshark34.supdate.check
+package fr.theshark34.supdate.models;
 
 /**
- * The FileInfos
+ * The State Response
  *
- * Contains the infos about a file, specific for each
- * check method.
+ * <p>
+ *    This is the model of the 'getstate' request response.
+ * </p>
  *
- * @version 3.2.0-BETA
- * @author Litarvan
+ * @version 3.0.0-BETA
+ * @author TheShark34
  */
-open class FileInfos(val fileRelativePath: String)
+public class StateResponse {
+
+    /**
+     * The received state
+     */
+    private boolean enabled;
+
+    /**
+     * The StateResponse
+     *
+     * @param enabled
+     *            The received state
+     */
+    public StateResponse(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
+     * Return the received state
+     *
+     * @return True if the server is enabled, false if not
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+}
