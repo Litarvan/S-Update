@@ -22,16 +22,6 @@ import java.io.File
 import java.io.IOException
 
 /**
- * The SUpdate Exception
- *
- * The main exception, every exception need to extends this one.
- *
- * @version 3.2.0-BETA
- * @author Litarvan
- */
-open class SUpdateException(message: String) : Exception(message)
-
-/**
  * The BadServerVersion Exception
  *
  * This exception is thrown when the server version is not
@@ -40,7 +30,7 @@ open class SUpdateException(message: String) : Exception(message)
  * @version 3.2.0-BETA
  * @author Litarvan
  */
-class BadServerVersionException(minVersion: String, serverVersion: String, revisionError: Boolean) : SUpdateException(if (revisionError)
+class BadServerVersionException(minVersion: String, serverVersion: String, revisionError: Boolean) : Exception(if (revisionError)
     "Bad server revision, server revision need to be $minVersion but is $serverVersion"
 else
     "Bad server version, need to be at least $minVersion but is $serverVersion")
@@ -54,7 +44,7 @@ else
  * @version 3.2.0-BETA
  * @author Litarvan
  */
-class BadServerResponseException(response: String) : SUpdateException("Bad server response, we couldn't parse the JSON by the given response : " + response)
+class BadServerResponseException(response: String) : Exception("Bad server response, we couldn't parse the JSON by the given response : " + response)
 
 /**
  * The FileNoPermission Exception
@@ -75,7 +65,7 @@ class FileNoPermissionException(file: File) : IOException("No permission for the
  * @version 3.2.0-BETA
  * @author Litarvan
  */
-class ServerDisabledException : SUpdateException("The server is disabled")
+class ServerDisabledException : Exception("The server is disabled")
 
 /**
  * The ServerMissingSomething Exception
@@ -86,7 +76,7 @@ class ServerDisabledException : SUpdateException("The server is disabled")
  * @version 3.2.0-BETA
  * @author Litarvan
  */
-class ServerMissingSomethingException(missingThing: String) : SUpdateException("Server need to have " + missingThing)
+class ServerMissingSomethingException(missingThing: String) : Exception("Server need to have " + missingThing)
 
 /**
  * The UnableToCheck Exception
@@ -98,4 +88,4 @@ class ServerMissingSomethingException(missingThing: String) : SUpdateException("
  * @version 3.2.0-BETA
  * @author Litarvan
  */
-class UnableToCheckException(file: File, thrownException: Exception) : SUpdateException("Can't check the file " + file.name + " Exception thrown : " + thrownException)
+class UnableToCheckException(file: File, thrownException: Exception) : Exception("Can't check the file " + file.name + " Exception thrown : " + thrownException)

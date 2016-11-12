@@ -110,6 +110,6 @@ class MD5CheckMethod : CheckMethod()
  * the infos about a file, its name and its MD5.
  *
  * @version 3.2.0-BETA
- * @author Litarvan
+ * @author TheShark34
  */
 class MD5FileInfos(fileRelativePath: String, val mD5: String) : FileInfos(fileRelativePath)

@@ -92,11 +92,6 @@ val DEFAULT_CHECK_METHOD: CheckMethod = Murmur3CheckMethod()
 class SUpdate(var serverUrl: String, var outputFolder: File)
 {
     /**
-     * The Crash Reporter
-     */
-    var reporter = CrashReporter(File(outputFolder, "s-update-crashes/"))
-
-    /**
      * The check method used to check the files
      */
     var checkMethod = DEFAULT_CHECK_METHOD
@@ -122,11 +117,6 @@ class SUpdate(var serverUrl: String, var outputFolder: File)
     val values = DownloadValues()
 
     /**
-     * If crash reporting is enabled
-     */
-    var crashReportingEnabled = false
-
-    /**
      * The current updater
      */
     var updater: Updater? = null
@@ -147,18 +137,8 @@ class SUpdate(var serverUrl: String, var outputFolder: File)
         // Creating the updater
         updater = Updater(this)
 
-        try
-        {
-            // And starting it !
-            updater!!.start()
-        }
-        catch (e: Exception)
-        {
-            if (crashReportingEnabled)
-                reporter.catchError(e)
-            else
-                throw e
-        }
+        // And starting it !
+        updater!!.start()
     }
 
     /**
