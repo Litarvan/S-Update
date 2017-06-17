@@ -4,8 +4,8 @@
 
 ## How to use it
 
-First you need to install the [Server](http://github.com/Motarva,/S-Update-Server) on a Web Server.
-Put your files in the files/ folder
+First you need to install the [Server](http://github.com/Litarvan/S-Update-Server) on a Web Server.
+Put your files in the `files/` folder
 Then, in your code, just insert that to update your program !
 
 ```java
